@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Stone {
+  id                  String             @id @default(auto()) @map("_id") @db.ObjectId
+  name                String             @unique
+  description         String?            @db.String
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  pictures            Picture[]
+  bodyEffects         BodyEffect[]       @relation(fields: [bodyEffectIds], references: [id])
+  bodyEffectIds       String[]           @db.ObjectId
+  spiritualEffects    SpiritualEffect[]  @relation(fields: [spiritualEffectIds], references: [id])
+  spiritualEffectIds  String[]           @db.ObjectId
+  emotionalEffects    EmotionalEffect[]  @relation(fields: [emotionalEffectIds], references: [id])
+  emotionalEffectIds  String[]           @db.ObjectId
+  rechargementTypes   RechargementType[] @relation(fields: [rechargementTypeIds], references: [id])
+  rechargementTypeIds String[]           @db.ObjectId
+  purificationTypes   PurificationType[] @relation(fields: [purificationTypeIds], references: [id])
+  purificationTypeIds String[]           @db.ObjectId
+  craftedForms        CraftedForm[]      @relation(fields: [craftedFormIds], references: [id])
+  craftedFormIds      String[]           @db.ObjectId
+  chakras             Chakra[]           @relation(fields: [chakraIds], references: [id])
+  chakraIds           String[]           @db.ObjectId
+  contraindications   Contraindication[] @relation(fields: [contraindicationIds], references: [id])
+  contraindicationIds String[]           @db.ObjectId
+}
+
+model BodyEffect {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  effect   String   @unique
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
+
+model Contraindication {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  contraindication String   @unique
+  stones           Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds         String[] @db.ObjectId
+}
+
+model Picture {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  url     String
+  stone   Stone  @relation(fields: [stoneId], references: [id], onDelete: Cascade)
+  stoneId String @db.ObjectId
+}
+
+model SpiritualEffect {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  effect   String   @unique
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
+
+model EmotionalEffect {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  effect   String   @unique
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
+
+model RechargementType {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  type     String   @unique
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
+
+model PurificationType {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  type     String   @unique
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
+
+model CraftedForm {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  form     String   @unique
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
+
+model Chakra {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  number   Int      @unique
+  name     String
+  stones   Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds String[] @db.ObjectId
+}
