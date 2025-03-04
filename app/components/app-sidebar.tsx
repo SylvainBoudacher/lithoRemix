@@ -1,7 +1,16 @@
 import {
-  Bot,
+  Bone,
+  BookHeart,
+  BookMinus,
+  BookOpen,
+  Droplet,
+  EyeClosed,
   Frame,
-  SquareTerminal
+  MessageCircleWarning,
+  Shell,
+  Sparkles,
+  SquareRoundCorner,
+  SunMoon
 } from "lucide-react"
 import * as React from "react"
 
@@ -32,40 +41,63 @@ const data = {
     {
       title: "Effets",
       url: "#",
-      icon: SquareTerminal,
+      icon: Sparkles,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Corporel",
+          url: "/effect/body",
+          icon: Bone,
         },
         {
-          title: "Starred",
+          title: "Émotionnel",
           url: "#",
+          icon: BookHeart,
         },
         {
-          title: "Settings",
+          title: "Spiritel",
           url: "#",
+          icon: EyeClosed,
         },
       ],
     },
     {
       title: "Types",
       url: "#",
-      icon: Bot,
+      icon: BookOpen,
       items: [
         {
-          title: "Genesis",
+          title: "Purification",
           url: "#",
+          icon: Droplet,
         },
         {
-          title: "Explorer",
+          title: "Rechargement",
           url: "#",
+          icon: SunMoon,
+        },
+      ],
+    },
+    {
+      title: "Autres",
+      url: "#",
+      icon: BookMinus,
+      items: [
+        {
+          title: "Chakra",
+          url: "#",
+          icon: Shell,
         },
         {
-          title: "Quantum",
+          title: "Contre indications",
           url: "#",
+          icon: MessageCircleWarning,
         },
+        {
+          title: "Forme artisanale",
+          url: "#",
+          icon: SquareRoundCorner,
+        }
       ],
     },
   ],
