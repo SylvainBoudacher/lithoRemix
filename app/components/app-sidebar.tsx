@@ -28,11 +28,11 @@ const data = {
       ],
     },
     {
-      title: "Building Your Application",
+      title: "Gestion des données",
       url: "#",
       items: [
         {
-          title: "Les pierres",
+          title: "Pierres",
           url: "/stones",
           icon: Pyramid,
         },
