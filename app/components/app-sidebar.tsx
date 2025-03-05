@@ -1,125 +1,96 @@
-import {
-  Bone,
-  BookHeart,
-  BookMinus,
-  BookOpen,
-  Droplet,
-  EyeClosed,
-  Frame,
-  MessageCircleWarning,
-  Shell,
-  Sparkles,
-  SquareRoundCorner,
-  SunMoon
-} from "lucide-react"
+import { Link, useLocation } from "@remix-run/react"
+import { BookOpenText, Library, Pyramid, Sparkles } from "lucide-react"
 import * as React from "react"
 
-import { NavMain } from "~/components/nav-main"
-import { NavProjects } from "~/components/nav-projects"
 import {
   Sidebar,
   SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
-  SidebarRail
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
 } from "~/components/ui/sidebar"
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  projects: [
-    {
-      name: "Site",
-      url: "#",
-      icon: Frame,
-    },
-  ],
   navMain: [
     {
-      title: "Effets",
-      url: "#",
-      icon: Sparkles,
-      isActive: true,
+      title: "Principales",
       items: [
         {
-          title: "Corporel",
-          url: "/effect/body",
-          icon: Bone,
-        },
-        {
-          title: "Émotionnel",
-          url: "#",
-          icon: BookHeart,
-        },
-        {
-          title: "Spiritel",
-          url: "#",
-          icon: EyeClosed,
+          title: "Le dictionnaire",
+          url: "/",
+          icon: Library,
         },
       ],
     },
     {
-      title: "Types",
+      title: "Building Your Application",
       url: "#",
-      icon: BookOpen,
       items: [
         {
-          title: "Purification",
-          url: "#",
-          icon: Droplet,
+          title: "Les pierres",
+          url: "/stones",
+          icon: Pyramid,
         },
         {
-          title: "Rechargement",
-          url: "#",
-          icon: SunMoon,
-        },
-      ],
-    },
-    {
-      title: "Autres",
-      url: "#",
-      icon: BookMinus,
-      items: [
-        {
-          title: "Chakra",
-          url: "#",
-          icon: Shell,
+          title: "Effets",
+          url: "/effects",
+          icon: Sparkles,
         },
         {
-          title: "Contre indications",
-          url: "#",
-          icon: MessageCircleWarning,
+          title: "Autres paramètres",
+          url: "/other",
+          icon: BookOpenText,
         },
-        {
-          title: "Forme artisanale",
-          url: "#",
-          icon: SquareRoundCorner,
-        }
       ],
     },
   ],
-  
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = useLocation()
+
+  const navData = {
+    ...data,
+    navMain: data.navMain.map(group => ({
+      ...group,
+      items: group.items.map(item => ({
+        ...item,
+        isActive: location.pathname === item.url
+      }))
+    }))
+  }
+
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
-        <div className="flex flex-row items-end gap-2 mx-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+        <div className="flex items-center gap-2 py-2 mx-2">
           <img src="/logo.svg" alt="logo" className="w-10 h-10" />
-          <h1 className="text-2xl font-bold group-data-[collapsible=icon]:hidden">LithoDico</h1>
-       </div>
+          <h1 className="text-2xl font-bold">LithoDico</h1>
+        </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} />
-        <NavMain items={data.navMain} />
+        {navData.navMain.map((item) => (
+          <SidebarGroup key={item.title}>
+            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {item.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={item.isActive}>
+                      <Link to={item.url}>{item.icon && <item.icon />} {item.title}</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
-      {/* <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   )

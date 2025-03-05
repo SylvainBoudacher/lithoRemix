@@ -13,7 +13,7 @@ export default function Index() {
       
         
     <div>
-      <h1>Default page</h1>
+      <h1 className="text-3xl font-bold">Bienvenue sur LithoDico</h1>
     </div>
       
     
