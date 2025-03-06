@@ -2,8 +2,8 @@ import type { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "LithoDico" },
+    { name: "description", content: "LithoDico App with RemixJS" },
   ];
 };
 
@@ -14,4 +14,3 @@ export default function Index() {
     </div>
   );
 }
-
