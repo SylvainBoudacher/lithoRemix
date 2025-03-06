@@ -1,4 +1,3 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useParams } from "@remix-run/react";
 import prisma from "~/lib/prismaDb";
 
@@ -11,7 +10,7 @@ import prisma from "~/lib/prismaDb";
 //   return { effects };
 // };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async () => {
   const bodyEffects = await prisma.bodyEffect.findMany({
     select: {
       id: true,
