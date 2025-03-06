@@ -4,13 +4,11 @@ export default function Effect() {
   const params = useParams();
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      
+    <div className="flex flex-col gap-4">
       <p className="text-muted-foreground">
-        Découvrez les effets des pierres sur le corps {params.effect}.
+        Les effets de la pierre sur
+        <span className="font-bold"> {params.effect}</span>.
       </p>
-      
-      
     </div>
-  )
-} 
+  );
+}
