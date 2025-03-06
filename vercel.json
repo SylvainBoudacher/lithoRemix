@@ -1,8 +1,0 @@
-{
-  "framework": "remix",
-  "functions": {
-    "app/api/effects/**/*.ts": {
-      "maxDuration": 60
-    }
-  }
-}
