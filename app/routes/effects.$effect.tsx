@@ -1,32 +1,33 @@
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useParams } from "@remix-run/react";
-import prisma from "~/lib/prismaDb";
+import { EffectChoice, getEffect } from "~/api/effects/getEffect";
 
-// export const loader = async ({ params }: LoaderFunctionArgs) => {
-//   const effects = await getEffect(params.effect as EffectChoice);
-//   if (!effects) {
-//     throw new Response("Not Found", { status: 404 });
-//   }
-//   console.log(effects);
-//   return { effects };
-// };
-
-export const loader = async () => {
-  const bodyEffects = await prisma.bodyEffect.findMany({
-    select: {
-      id: true,
-      effect: true,
-    },
-    orderBy: {
-      effect: "asc",
-    },
-  });
-
-  if (!bodyEffects) {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const effects = await getEffect(params.effect as EffectChoice);
+  if (!effects) {
     throw new Response("Not Found", { status: 404 });
   }
-
-  return bodyEffects;
+  console.log(effects);
+  return { effects };
 };
+
+// export const loader = async () => {
+//   const bodyEffects = await prisma.bodyEffect.findMany({
+//     select: {
+//       id: true,
+//       effect: true,
+//     },
+//     orderBy: {
+//       effect: "asc",
+//     },
+//   });
+
+//   if (!bodyEffects) {
+//     throw new Response("Not Found", { status: 404 });
+//   }
+
+//   return bodyEffects;
+// };
 
 export default function Effect() {
   const params = useParams();
