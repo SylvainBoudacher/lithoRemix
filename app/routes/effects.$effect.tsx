@@ -11,24 +11,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return { effects };
 };
 
-// export const loader = async () => {
-//   const bodyEffects = await prisma.bodyEffect.findMany({
-//     select: {
-//       id: true,
-//       effect: true,
-//     },
-//     orderBy: {
-//       effect: "asc",
-//     },
-//   });
-
-//   if (!bodyEffects) {
-//     throw new Response("Not Found", { status: 404 });
-//   }
-
-//   return bodyEffects;
-// };
-
 export default function Effect() {
   const params = useParams();
   const { effects } = useLoaderData<typeof loader>();

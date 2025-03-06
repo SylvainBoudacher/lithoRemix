@@ -33,6 +33,7 @@ export default function Effets() {
           <NavLink
             key={effect.url}
             to={effect.url}
+            rel="prefetch"
             className={({ isActive }) =>
               `flex items-center gap-2 ${
                 isActive ? "text-primary font-bold" : "text-gray-500"
