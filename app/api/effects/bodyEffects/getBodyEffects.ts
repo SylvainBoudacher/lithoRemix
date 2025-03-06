@@ -20,3 +20,15 @@ export async function getBodyEffects() {
     throw new Error("Impossible de récupérer les effets corporels");
   }
 }
+
+export async function getBodyEffectById(id: string) {
+  try {
+    const bodyEffect = await prisma.bodyEffect.findUnique({
+      where: { id },
+    });
+    return bodyEffect;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'effet corporel:", error);
+    throw new Error("Impossible de récupérer l'effet corporel");
+  }
+}

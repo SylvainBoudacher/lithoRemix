@@ -1,16 +1,18 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
   json,
+  Outlet,
   redirect,
   useActionData,
   useFetcher,
   useLoaderData,
+  useNavigate,
   useParams,
 } from "@remix-run/react";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { createEffect } from "~/api/effects/createEffect";
-import { EffectChoice, getEffect } from "~/api/effects/getEffect";
+import { EffectChoice, getEffects } from "~/api/effects/getEffect";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
@@ -30,7 +32,7 @@ const effectTitles: Record<EffectChoice, string> = {
 };
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const effects = await getEffect(params.effect as EffectChoice);
+  const effects = await getEffects(params.effect as EffectChoice);
   if (!effects) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -66,6 +68,7 @@ export default function Effect() {
   const { effects } = useLoaderData<typeof loader>();
   const errors = useActionData<typeof action>();
   const fetcher = useFetcher();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (fetcher.state === "idle") {
@@ -76,60 +79,74 @@ export default function Effect() {
 
   return (
     <div className="flex flex-col gap-4">
-      <fetcher.Form method="post" id="effect-form">
-        <div className="h-6 text-red-500 mb-2">
-          {errors?.name && <p>{errors.name}</p>}
-        </div>
-        <div className=" flex flex-row gap-2">
-          <Input
-            name="effectName"
-            className="w-48"
-            placeholder={`Nom de l'effet ${
-              effectTitles[params.effect as EffectChoice]
-            }`}
-          />
-          <Button className="w-fit ">Ajouter un effet</Button>
-        </div>
-      </fetcher.Form>
+      <div className="flex flex-row">
+        <fetcher.Form method="post" id="effect-form">
+          <div className="h-6 text-red-500 mb-2">
+            {errors?.name && <p>{errors.name}</p>}
+          </div>
+          <div className=" flex flex-row gap-2">
+            <Input
+              name="effectName"
+              className="w-48"
+              placeholder={`Nom de l'effet ${
+                effectTitles[params.effect as EffectChoice]
+              }`}
+            />
+            <Button className="w-fit ">Ajouter un effet</Button>
+          </div>
+        </fetcher.Form>
+      </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[70px]">ID</TableHead>
-            <TableHead className="md:pl-20">Nom</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {effects.map((effect) => (
-            <TableRow key={effect.id}>
-              <TableCell className="w-[70px] truncate">{effect.id}</TableCell>
-              <TableCell className="md:pl-20 font-bold">
-                {effect.effect}
-              </TableCell>
-              <TableCell className="flex flex-row gap-2 justify-end">
-                <Button>View</Button>
-                <fetcher.Form
-                  action={`/effects/${params.effect}/${effect.id}/destroy`}
-                  method="post"
-                  onSubmit={(event) => {
-                    const response = confirm(
-                      "Voulez-vous vraiment supprimer cet effet ?"
-                    );
-                    if (!response) {
-                      event.preventDefault();
-                    }
-                  }}
-                >
-                  <Button variant="destructive" type="submit">
-                    <Trash2 />
-                  </Button>
-                </fetcher.Form>
-              </TableCell>
+      <div className="flex flex-row gap-10">
+        <Table className="">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[70px]">ID</TableHead>
+              <TableHead className="md:pl-20">Nom</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {effects.map((effect) => (
+              <TableRow key={effect.id}>
+                <TableCell className="w-[70px] truncate">{effect.id}</TableCell>
+                <TableCell className="md:pl-20 font-bold">
+                  {effect.effect}
+                </TableCell>
+                <TableCell className="flex flex-row gap-2 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      navigate(`/effects/${params.effect}/${effect.id}/edit`);
+                    }}
+                  >
+                    <Pencil />
+                  </Button>
+                  <fetcher.Form
+                    action={`/effects/${params.effect}/${effect.id}/destroy`}
+                    method="post"
+                    onSubmit={(event) => {
+                      const response = confirm(
+                        "Voulez-vous vraiment supprimer cet effet ?"
+                      );
+                      if (!response) {
+                        event.preventDefault();
+                      }
+                    }}
+                  >
+                    <Button variant="destructive" type="submit">
+                      <Trash2 />
+                    </Button>
+                  </fetcher.Form>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <div className="w-1/3 border border-dashed border-black bg-slate-100 rounded-xl">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }

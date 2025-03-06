@@ -20,3 +20,15 @@ export async function getEmotionalEffect() {
     throw new Error("Impossible de récupérer les effets émotionnels");
   }
 }
+
+export async function getEmotionalEffectById(id: string) {
+  try {
+    const emotionalEffect = await prisma.emotionalEffect.findUnique({
+      where: { id },
+    });
+    return emotionalEffect;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'effet émotionnel:", error);
+    throw new Error("Impossible de récupérer l'effet émotionnel");
+  }
+}
