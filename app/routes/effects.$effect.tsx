@@ -87,7 +87,7 @@ export default function Effect() {
           <div className=" flex flex-row gap-2">
             <Input
               name="effectName"
-              className="w-48"
+              className="w-60"
               placeholder={`Nom de l'effet ${
                 effectTitles[params.effect as EffectChoice]
               }`}
