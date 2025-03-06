@@ -7,6 +7,7 @@ import {
   useLoaderData,
   useParams,
 } from "@remix-run/react";
+import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { createEffect } from "~/api/effects/createEffect";
 import { EffectChoice, getEffect } from "~/api/effects/getEffect";
@@ -106,8 +107,24 @@ export default function Effect() {
               <TableCell className="md:pl-20 font-bold">
                 {effect.effect}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="flex flex-row gap-2 justify-end">
                 <Button>View</Button>
+                <fetcher.Form
+                  action={`/effects/${params.effect}/${effect.id}/destroy`}
+                  method="post"
+                  onSubmit={(event) => {
+                    const response = confirm(
+                      "Voulez-vous vraiment supprimer cet effet ?"
+                    );
+                    if (!response) {
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  <Button variant="destructive" type="submit">
+                    <Trash2 />
+                  </Button>
+                </fetcher.Form>
               </TableCell>
             </TableRow>
           ))}
