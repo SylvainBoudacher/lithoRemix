@@ -35,7 +35,7 @@ async function main() {
     // Création des types de purification
     const purificationType = await prisma.purificationType.create({
       data: {
-        type: "Lune",
+        type: "Soleil",
       },
     });
 
