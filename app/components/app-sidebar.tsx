@@ -43,7 +43,7 @@ const data = {
         },
         {
           title: "Types",
-          url: "/type",
+          url: "/types",
           icon: SunMoon,
         },
         {
