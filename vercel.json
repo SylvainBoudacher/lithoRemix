@@ -1,7 +1,6 @@
 {
-    "functions": {
-      "app/routes/**/*.tsx": {
-        "maxDuration": 60
-      }
-    }
+  "framework": "remix",
+  "functions": {
+    "maxDuration": 60
   }
+}
