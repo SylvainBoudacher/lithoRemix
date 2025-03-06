@@ -31,7 +31,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export default function Effect() {
   const params = useParams();
-  const bodyEffects = useLoaderData<typeof loader>();
+  const { effects } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col gap-4">
@@ -40,7 +40,7 @@ export default function Effect() {
         <span className="font-bold"> {params.effect}</span>.
       </p>
       <div className="flex flex-col gap-4">
-        {bodyEffects.map((effect) => (
+        {effects.map((effect) => (
           <p key={effect.id}>{effect.effect}</p>
         ))}
       </div>
