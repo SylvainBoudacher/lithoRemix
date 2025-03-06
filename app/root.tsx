@@ -63,6 +63,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export const translationPath = [
+  {
+    path: "body",
+    translation: "Corporel"
+  },
+  {
+    path: "spiritual",
+    translation: "Spirituel"
+  },
+  {
+    path: "emotional",
+    translation: "Emotionnel"
+  }
+]
+
 
 export default function App() {
   const location = useLocation();
@@ -71,22 +86,6 @@ export default function App() {
     .split('/')
     .filter(segment => segment !== '');
 
-  const translationPath = [
-    {
-      path: "body",
-      translation: "Corporel"
-    },
-    {
-      path: "spiritual",
-      translation: "Spirituel"
-    },
-    {
-      path: "emotional",
-      translation: "Emotionnel"
-    }
-  ]
-  
-  
   return (
     <SidebarProvider>
       <AppSidebar />
