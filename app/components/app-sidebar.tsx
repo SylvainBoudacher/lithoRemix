@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@remix-run/react"
-import { BookOpenText, Library, Pyramid, Sparkles } from "lucide-react"
+import { BookOpenText, Library, Pyramid, Sparkles, SunMoon } from "lucide-react"
 import * as React from "react"
 
 import {
@@ -40,6 +40,11 @@ const data = {
           title: "Effets",
           url: "/effects",
           icon: Sparkles,
+        },
+        {
+          title: "Types",
+          url: "/type",
+          icon: SunMoon,
         },
         {
           title: "Autres paramètres",

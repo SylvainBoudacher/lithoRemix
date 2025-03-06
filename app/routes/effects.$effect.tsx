@@ -143,7 +143,7 @@ export default function Effect() {
             ))}
           </TableBody>
         </Table>
-        <div className="w-1/3 border border-dashed border-black bg-slate-100 rounded-xl">
+        <div className="w-1/3 border border-dashed border-black bg-slate-100 rounded-xl h-[200px]">
           <Outlet />
         </div>
       </div>
