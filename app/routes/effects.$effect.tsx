@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useParams } from "@remix-run/react";
+import { useLoaderData, useParams } from "@remix-run/react";
 import { EffectChoice, getEffect } from "~/api/effects/getEffect";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -8,11 +8,12 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     throw new Response("Not Found", { status: 404 });
   }
   console.log(effects);
-  return effects;
+  return { effects };
 };
 
 export default function Effect() {
   const params = useParams();
+  const { effects } = useLoaderData<typeof loader>();
 
   return (
     <div className="flex flex-col gap-4">
@@ -20,6 +21,11 @@ export default function Effect() {
         Les effets de la pierre sur
         <span className="font-bold"> {params.effect}</span>.
       </p>
+      <div className="flex flex-col gap-4">
+        {effects.map((effect) => (
+          <p key={effect.id}>{effect.effect}</p>
+        ))}
+      </div>
     </div>
   );
 }
