@@ -1,4 +1,15 @@
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { useParams } from "@remix-run/react";
+import { EffectChoice, getEffect } from "~/api/effects/getEffect";
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const effects = await getEffect(params.effect as EffectChoice);
+  if (!effects) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  console.log(effects);
+  return effects;
+};
 
 export default function Effect() {
   const params = useParams();
