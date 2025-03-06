@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation
 } from "@remix-run/react";
 
 import { Separator } from "@radix-ui/react-separator";
@@ -15,7 +16,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbSeparator
 } from "./components/ui/breadcrumb";
 import {
   SidebarInset,
@@ -62,7 +63,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+
 export default function App() {
+  const location = useLocation();
+ 
+  const pathSegments = location.pathname
+    .split('/')
+    .filter(segment => segment !== '');
+
+  const translationPath = [
+    {
+      path: "body",
+      translation: "Corporel"
+    },
+    {
+      path: "spiritual",
+      translation: "Spirituel"
+    },
+    {
+      path: "emotional",
+      translation: "Emotionnel"
+    }
+  ]
+  
+  
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -73,15 +97,20 @@ export default function App() {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
+                {pathSegments.map((segment, index) => (
+                  <>
+                    <BreadcrumbItem key={index}>
+                      <BreadcrumbLink href={`/${pathSegments.slice(0, index + 1).join('/')}`}>
+                      <BreadcrumbPage className="text-zinc-700 capitalize">
+                        {translationPath.find(t => t.path === segment)?.translation || segment}
+                      </BreadcrumbPage>
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    {index < pathSegments.length - 1 && (
+                      <BreadcrumbSeparator className="hidden md:block" />
+                    )}
+                  </>
+                ))}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
