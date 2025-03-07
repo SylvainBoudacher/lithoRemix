@@ -8,6 +8,7 @@ import {
   useLocation
 } from "@remix-run/react";
 
+import { HeroUIProvider } from "@heroui/react";
 import { Separator } from "@radix-ui/react-separator";
 import { AppSidebar } from "./components/app-sidebar";
 import {
@@ -55,9 +56,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <HeroUIProvider>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </HeroUIProvider>
       </body>
     </html>
   );
