@@ -26,7 +26,7 @@ export default function Stone() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">Tout les effets</h1>
+      <h1 className="text-3xl font-bold">Les pierres</h1>
 
       <div className="flex flex-row gap-12 pt-6">
         {EffectsNavList.map((effect) => (
