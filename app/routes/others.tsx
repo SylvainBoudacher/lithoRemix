@@ -1,25 +1,25 @@
 import { NavLink, Outlet } from "@remix-run/react";
 import { LucideIcon, Shell, ShieldAlert, TriangleDashed } from "lucide-react";
 
-export default function Effets() {
-  const EffectsNavList: {
+export default function Others() {
+  const otherParamsNavList: {
     title: string;
     url: string;
     icon: LucideIcon;
   }[] = [
     {
       title: "Formes artisanales",
-      url: "/other/crafted-form",
+      url: "/others/craftedForm",
       icon: TriangleDashed,
     },
     {
       title: "Chakras",
-      url: "/other/chakra",
+      url: "/others/chakra",
       icon: Shell,
     },
     {
       title: "Contre indications",
-      url: "/other/contraindication",
+      url: "/others/contraindication",
       icon: ShieldAlert,
     },
   ];
@@ -29,18 +29,18 @@ export default function Effets() {
       <h1 className="text-3xl font-bold">Tout les autres paramètres</h1>
 
       <div className="flex flex-row gap-12 pt-6">
-        {EffectsNavList.map((effect) => (
+        {otherParamsNavList.map((otherParam) => (
           <NavLink
-            key={effect.url}
-            to={effect.url}
+            key={otherParam.url}
+            to={otherParam.url}
             className={({ isActive }) =>
               `flex items-center gap-2 ${
                 isActive ? "text-primary font-bold" : "text-gray-500"
               }`
             }
           >
-            <effect.icon />
-            {effect.title}
+            <otherParam.icon />
+            {otherParam.title}
           </NavLink>
         ))}
       </div>

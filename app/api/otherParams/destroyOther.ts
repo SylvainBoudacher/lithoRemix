@@ -1,7 +1,7 @@
 import { destroyChakra } from "./chakra/destroyChakra";
 import { destroyContraindication } from "./contraindication/destroyContraindication";
 import { destroyCraftedForm } from "./craftedForm/destroyCraftedForm";
-import { OtherParamChoice } from "./createTypes";
+import { OtherParamChoice } from "./createOther";
 
 
 export const destroyOtherParam = async (type: OtherParamChoice, id: string) => {

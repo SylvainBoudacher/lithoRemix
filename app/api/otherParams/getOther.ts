@@ -1,7 +1,7 @@
 import { getChakraById, getChakras } from "./chakra/getChakra";
 import { getContraindicationById, getContraindications } from "./contraindication/getContraindication";
 import { getCraftedFormById, getCraftedForms } from "./craftedForm/getCraftedForm";
-import { OtherParamChoice } from "./createTypes";
+import { OtherParamChoice } from "./createOther";
 
 export const getOtherParams = async (type: OtherParamChoice) => {
     switch (type) {

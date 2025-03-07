@@ -80,7 +80,14 @@ export const translationPath = [
     path: "craftedForms",
     translation: "Forme artisanale"
   },
-  
+  {
+    path: "others",
+    translation: "Autres paramètres"
+  },
+  {
+    path: "stones",
+    translation: "Pierres"
+  },
 ]
 
 

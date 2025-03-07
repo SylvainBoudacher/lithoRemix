@@ -1,7 +1,7 @@
 import { updateChakra } from "./chakra/updateChakra";
 import { updateContraindication } from "./contraindication/updateContraindication";
 import { updateCraftedForm } from "./craftedForm/updateCraftedForm";
-import { OtherParamChoice } from "./createTypes";
+import { OtherParamChoice } from "./createOther";
 
 export const updateOtherParam = async (type: OtherParamChoice, id: string, name: string) => {
     switch (type) {

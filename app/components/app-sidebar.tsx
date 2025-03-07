@@ -48,7 +48,7 @@ const data = {
         },
         {
           title: "Autres paramètres",
-          url: "/other",
+          url: "/others",
           icon: BookOpenText,
         },
       ],

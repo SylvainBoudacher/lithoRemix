@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { countOtherParams } from "~/api/otherParams/countTypes";
+import { countOtherParams } from "~/api/otherParams/countOther";
 import CardKpi from "~/components/card/kpiCard";
 import { translationPath } from "~/root";
 

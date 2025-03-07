@@ -7,57 +7,56 @@ async function main() {
     // Création des effets corporels
     const bodyEffect = await prisma.bodyEffect.create({
       data: {
-        effect: "Tête",
+        effect: "Pied",
       },
     });
 
     // Création des effets spirituels
     const spiritualEffect = await prisma.spiritualEffect.create({
       data: {
-        effect: "Méditation profonde",
+        effect: "Méditation",
       },
     });
 
     // Création des effets émotionnels
     const emotionalEffect = await prisma.emotionalEffect.create({
       data: {
-        effect: "Apaisement",
+        effect: "Emotion",
       },
     });
 
     // Création des types de rechargement
     const rechargementType = await prisma.rechargementType.create({
       data: {
-        type: "Lumière lunaire",
+        type: "Soleil",
       },
     });
 
     // Création des types de purification
     const purificationType = await prisma.purificationType.create({
       data: {
-        type: "Soleil",
+        type: "Méditation",
       },
     });
 
     // Création des formes travaillées
     const craftedForm = await prisma.craftedForm.create({
       data: {
-        form: "Pendentif",
+        form: "Boule",
       },
     });
 
     // Création des chakras
     const chakra = await prisma.chakra.create({
       data: {
-        number: 1,
-        name: "Racine",
+        number: 2,
       },
     });
 
     // Création des contre-indications
     const contraindication = await prisma.contraindication.create({
       data: {
-        contraindication: "Grossesse",
+        contraindicationName: "Test",
       },
     });
 
