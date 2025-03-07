@@ -1,6 +1,5 @@
 import prisma from '~/lib/prismaDb';
 
-
 export async function getChakras() {
   try {
     const chakras = await prisma.chakra.findMany({

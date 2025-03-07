@@ -33,7 +33,7 @@ const data = {
       items: [
         {
           title: "Pierres",
-          url: "/stones",
+          url: "/stones/list",
           icon: Pyramid,
         },
         {
