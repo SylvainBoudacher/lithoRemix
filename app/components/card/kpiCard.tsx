@@ -1,4 +1,4 @@
-import { Bone, BookHeart, Flower, Leaf, Sun } from "lucide-react";
+import { Bone, BookHeart, Flower, Leaf, Shell, ShieldAlert, Sun, TriangleDashed } from "lucide-react";
 
 const iconPerType = {
     purification: <Sun size={16} />,
@@ -6,6 +6,9 @@ const iconPerType = {
     Corporel: <Bone size={16} />,
     Spirituel: <Flower size={16} />,
     Emotionnel: <BookHeart size={16} />,
+    chakras: <Shell size={16} />,
+    contraindications: <ShieldAlert size={16} />,
+    'Forme artisanale': <TriangleDashed size={16} />,
 }
 
 

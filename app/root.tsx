@@ -75,7 +75,12 @@ export const translationPath = [
   {
     path: "emotional",
     translation: "Emotionnel"
-  }
+  },
+  {
+    path: "craftedForms",
+    translation: "Forme artisanale"
+  },
+  
 ]
 
 
