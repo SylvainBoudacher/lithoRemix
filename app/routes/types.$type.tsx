@@ -142,7 +142,7 @@ export default function Type() {
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>Ï
+          </TableBody>
         </Table>
         <div className="w-1/3 border border-dashed border-black bg-slate-100 rounded-xl h-[200px]">
           <Outlet />

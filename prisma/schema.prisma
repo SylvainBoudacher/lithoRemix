@@ -46,10 +46,10 @@ model BodyEffect {
 }
 
 model Contraindication {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  contraindication String   @unique
-  stones           Stone[]  @relation(fields: [stoneIds], references: [id])
-  stoneIds         String[] @db.ObjectId
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  contraindicationName String   @unique
+  stones               Stone[]  @relation(fields: [stoneIds], references: [id])
+  stoneIds             String[] @db.ObjectId
 }
 
 model Picture {
@@ -97,7 +97,6 @@ model CraftedForm {
 model Chakra {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   number   Int      @unique
-  name     String
   stones   Stone[]  @relation(fields: [stoneIds], references: [id])
   stoneIds String[] @db.ObjectId
 }
