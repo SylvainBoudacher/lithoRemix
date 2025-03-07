@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "@remix-run/react";
-import { BookHeart, List, LucideIcon, Plus } from "lucide-react";
+import { List, LucideIcon, Plus } from "lucide-react";
 
 export default function Stone() {
   const EffectsNavList: {
@@ -16,11 +16,6 @@ export default function Stone() {
       title: "Créer une pierre",
       url: "/stones/create",
       icon: Plus,
-    },
-    {
-      title: "Emotionnel",
-      url: "/effects/emotional",
-      icon: BookHeart,
     },
   ];
 
