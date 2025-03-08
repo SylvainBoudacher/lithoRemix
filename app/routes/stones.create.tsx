@@ -1,4 +1,10 @@
-import { json, redirect, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import {
+  json,
+  redirect,
+  useFetcher,
+  useLoaderData,
+  useParams,
+} from "@remix-run/react";
 import { getBodyEffects } from "~/api/effects/bodyEffects/getBodyEffects";
 import { getEmotionalEffect } from "~/api/effects/emotionalEffect/getEmotionalEffect";
 import { getSpiritualEffect } from "~/api/effects/spiritualEffect/getSpiritualEffect";
@@ -13,8 +19,7 @@ import { ActionFunctionArgs } from "@remix-run/node";
 import { createStone } from "~/api/stones/createStone";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-
-
+import { Textarea } from "~/components/ui/textarea";
 
 export const loader = async () => {
   const bodyEffects = await getBodyEffects();
@@ -26,7 +31,16 @@ export const loader = async () => {
   const chakras = await getChakras();
   const contraindications = await getContraindications();
 
-  return json({ bodyEffects, spiritualEffects, emotionalEffects, rechargementTypes, purificationTypes, craftedForms, chakras, contraindications });
+  return json({
+    bodyEffects,
+    spiritualEffects,
+    emotionalEffects,
+    rechargementTypes,
+    purificationTypes,
+    craftedForms,
+    chakras,
+    contraindications,
+  });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -48,18 +62,35 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     await createStone({
       name: name as string,
-      bodyEffectIds: bodyEffects ? (bodyEffects as string).split(',') : undefined,
-      emotionalEffectIds: emotionalEffects ? (emotionalEffects as string).split(',') : undefined,
-      spiritualEffectIds: spiritualEffects ? (spiritualEffects as string).split(',') : undefined,
-      rechargementTypeIds: rechargementTypes ? (rechargementTypes as string).split(',') : undefined,
-      purificationTypeIds: purificationTypes ? (purificationTypes as string).split(',') : undefined,
-      craftedFormIds: craftedForms ? (craftedForms as string).split(',') : undefined,
-      chakraIds: chakras ? (chakras as string).split(',') : undefined,
-      contraindicationIds: contraindications ? (contraindications as string).split(',') : undefined
+      bodyEffectIds: bodyEffects
+        ? (bodyEffects as string).split(",")
+        : undefined,
+      emotionalEffectIds: emotionalEffects
+        ? (emotionalEffects as string).split(",")
+        : undefined,
+      spiritualEffectIds: spiritualEffects
+        ? (spiritualEffects as string).split(",")
+        : undefined,
+      rechargementTypeIds: rechargementTypes
+        ? (rechargementTypes as string).split(",")
+        : undefined,
+      purificationTypeIds: purificationTypes
+        ? (purificationTypes as string).split(",")
+        : undefined,
+      craftedFormIds: craftedForms
+        ? (craftedForms as string).split(",")
+        : undefined,
+      chakraIds: chakras ? (chakras as string).split(",") : undefined,
+      contraindicationIds: contraindications
+        ? (contraindications as string).split(",")
+        : undefined,
     });
   } catch (error) {
     console.error(error);
-    return json({ error: "Une erreur est survenue lors de la création de la pierre" }, { status: 500 });
+    return json(
+      { error: "Une erreur est survenue lors de la création de la pierre" },
+      { status: 500 }
+    );
   }
   return redirect("/stones/list");
 };
@@ -67,21 +98,80 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function StonesCreate() {
   const params = useParams();
   const fetcher = useFetcher();
-  const { bodyEffects, emotionalEffects, spiritualEffects, rechargementTypes, purificationTypes, craftedForms, chakras, contraindications } = useLoaderData<typeof loader>();
+  const {
+    bodyEffects,
+    emotionalEffects,
+    spiritualEffects,
+    rechargementTypes,
+    purificationTypes,
+    craftedForms,
+    chakras,
+    contraindications,
+  } = useLoaderData<typeof loader>();
 
   return (
-
     <fetcher.Form method="post" id="create-stone-form">
-
       <div className="flex flex-col gap-6 mt-10">
-        <div>
-          <p className="text-md font-semibold text-zinc-800 mb-3">Nom de la pierre</p>
-          <Input
-            name="name"
-            placeholder="Entrez le nom de la pierre"
-            className="max-w-xs"
-          />
+        <div className="flex flex-row gap-6">
+          <div className="flex flex-col gap-6 w-full max-w-2xl">
+            <div>
+              <p className="text-md font-semibold text-zinc-800 mb-3">
+                Nom de la pierre
+              </p>
+              <Input
+                name="name"
+                placeholder="Entrez le nom de la pierre"
+                className="max-w-xs"
+              />
+            </div>
+
+            <div className="flex flex-row gap-6 w-full justify-start">
+              <div className="w-full max-w-xs">
+                <p className="text-md font-semibold text-zinc-800 mb-3">
+                  Description
+                </p>
+                <Textarea
+                  name="description"
+                  placeholder="Entrez la description de la pierre"
+                />
+              </div>
+              <div className="w-full max-w-xs">
+                <p className="text-md font-semibold text-zinc-800 mb-3">
+                  Image
+                </p>
+                <Input id="picture" type="file" accept="image/*" />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-6 ">
+            <div className="w-full max-w-xs">
+              <p className="text-md font-semibold text-zinc-800 mb-3">Image</p>
+              <label
+                htmlFor="picture"
+                className="flex items-center justify-center w-64 h-64 border-2 border-dashed border-gray-400 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden rounded-lg shadow-md"
+              >
+                <div className="text-center w-full h-full flex items-center justify-center">
+                  <div id="placeholder" className="text-gray-500">
+                    Choisir une image
+                  </div>
+                  <img
+                    id="image-preview"
+                    className="hidden w-full h-full object-cover"
+                    alt="Aperçu"
+                  />
+                </div>
+                <input
+                  id="picture"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                />
+              </label>
+            </div>
+          </div>
         </div>
+
         <div className="flex flex-row gap-6">
           <div className="flex flex-col gap-4 w-full max-w-xs">
             <p className="text-md font-semibold text-zinc-800">Effets</p>
@@ -105,7 +195,9 @@ export default function StonesCreate() {
               selectionMode="multiple"
             >
               {emotionalEffects.map((emotionalEffect) => (
-                <SelectItem key={emotionalEffect.id}>{emotionalEffect.effect}</SelectItem>
+                <SelectItem key={emotionalEffect.id}>
+                  {emotionalEffect.effect}
+                </SelectItem>
               ))}
             </Select>
 
@@ -115,9 +207,11 @@ export default function StonesCreate() {
               name="spiritualEffects"
               placeholder="Sélectionnez un effet spirituel"
               selectionMode="multiple"
-            > 
+            >
               {spiritualEffects.map((spiritualEffect) => (
-                <SelectItem key={spiritualEffect.id}>{spiritualEffect.effect}</SelectItem>
+                <SelectItem key={spiritualEffect.id}>
+                  {spiritualEffect.effect}
+                </SelectItem>
               ))}
             </Select>
           </div>
@@ -131,7 +225,9 @@ export default function StonesCreate() {
               selectionMode="multiple"
             >
               {rechargementTypes.map((rechargementType) => (
-                <SelectItem key={rechargementType.id}>{rechargementType.type}</SelectItem>
+                <SelectItem key={rechargementType.id}>
+                  {rechargementType.type}
+                </SelectItem>
               ))}
             </Select>
 
@@ -143,54 +239,57 @@ export default function StonesCreate() {
               selectionMode="multiple"
             >
               {purificationTypes.map((purificationType) => (
-                <SelectItem key={purificationType.id}>{purificationType.type}</SelectItem>
+                <SelectItem key={purificationType.id}>
+                  {purificationType.type}
+                </SelectItem>
               ))}
             </Select>
           </div>
           <div className="flex flex-col gap-4 w-full max-w-xs">
-          <p className="text-md font-semibold text-zinc-800">Autres paramètres</p>
-          <Select
-            className="max-w-xs"
-            label="Forme artisanale"
-            name="craftedForms"
-            placeholder="Sélectionnez une forme artisanale"
-            selectionMode="multiple"
-          >
-            {craftedForms.map((craftedForm) => (
-              <SelectItem key={craftedForm.id}>{craftedForm.form}</SelectItem>
-            ))}
-          </Select>
+            <p className="text-md font-semibold text-zinc-800">
+              Autres paramètres
+            </p>
+            <Select
+              className="max-w-xs"
+              label="Forme artisanale"
+              name="craftedForms"
+              placeholder="Sélectionnez une forme artisanale"
+              selectionMode="multiple"
+            >
+              {craftedForms.map((craftedForm) => (
+                <SelectItem key={craftedForm.id}>{craftedForm.form}</SelectItem>
+              ))}
+            </Select>
 
-          <Select
-            className="max-w-xs"
-            label="Chakra"
-            name="chakras"
-            placeholder="Sélectionnez un chakra"
-            selectionMode="multiple"
-          >
-            {chakras.map((chakra) => (
-              <SelectItem key={chakra.id}>{chakra.number}</SelectItem>
-            ))}
-          </Select>
+            <Select
+              className="max-w-xs"
+              label="Chakra"
+              name="chakras"
+              placeholder="Sélectionnez un chakra"
+              selectionMode="multiple"
+            >
+              {chakras.map((chakra) => (
+                <SelectItem key={chakra.id}>{chakra.number}</SelectItem>
+              ))}
+            </Select>
 
-          <Select
-            className="max-w-xs"
-            label="Contre-indications"
-            name="contraindications"
-            placeholder="Sélectionnez une contre-indication"
-          >
-            {contraindications.map((contraindication) => (
-              <SelectItem key={contraindication.id}>{contraindication.contraindicationName}</SelectItem>
-            ))}
-          </Select>
+            <Select
+              className="max-w-xs"
+              label="Contre-indications"
+              name="contraindications"
+              placeholder="Sélectionnez une contre-indication"
+            >
+              {contraindications.map((contraindication) => (
+                <SelectItem key={contraindication.id}>
+                  {contraindication.contraindicationName}
+                </SelectItem>
+              ))}
+            </Select>
           </div>
         </div>
-    </div>
+      </div>
 
-    <Button className="w-fit mt-10">Ajouter une pierre</Button>
-
-
+      <Button className="w-fit mt-10">Ajouter une pierre</Button>
     </fetcher.Form>
-
   );
 }
