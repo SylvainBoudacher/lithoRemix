@@ -135,39 +135,6 @@ export default function StonesCreate() {
                   placeholder="Entrez la description de la pierre"
                 />
               </div>
-              <div className="w-full max-w-xs">
-                <p className="text-md font-semibold text-zinc-800 mb-3">
-                  Image
-                </p>
-                <Input id="picture" type="file" accept="image/*" />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-6 ">
-            <div className="w-full max-w-xs">
-              <p className="text-md font-semibold text-zinc-800 mb-3">Image</p>
-              <label
-                htmlFor="picture"
-                className="flex items-center justify-center w-64 h-64 border-2 border-dashed border-gray-400 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden rounded-lg shadow-md"
-              >
-                <div className="text-center w-full h-full flex items-center justify-center">
-                  <div id="placeholder" className="text-gray-500">
-                    Choisir une image
-                  </div>
-                  <img
-                    id="image-preview"
-                    className="hidden w-full h-full object-cover"
-                    alt="Aperçu"
-                  />
-                </div>
-                <input
-                  id="picture"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                />
-              </label>
             </div>
           </div>
         </div>
