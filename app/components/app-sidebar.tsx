@@ -1,6 +1,13 @@
-import { Link, useLocation } from "@remix-run/react"
-import { BookOpenText, Library, Pyramid, Sparkles, SunMoon } from "lucide-react"
-import * as React from "react"
+import { Link, useLocation } from "@remix-run/react";
+import {
+  BookOpenText,
+  FileImage,
+  Library,
+  Pyramid,
+  Sparkles,
+  SunMoon,
+} from "lucide-react";
+import * as React from "react";
 
 import {
   Sidebar,
@@ -13,7 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "~/components/ui/sidebar"
+} from "~/components/ui/sidebar";
 
 const data = {
   navMain: [
@@ -51,24 +58,29 @@ const data = {
           url: "/others",
           icon: BookOpenText,
         },
+        {
+          title: "Images",
+          url: "/pictures",
+          icon: FileImage,
+        },
       ],
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const location = useLocation()
+  const location = useLocation();
 
   const navData = {
     ...data,
-    navMain: data.navMain.map(group => ({
+    navMain: data.navMain.map((group) => ({
       ...group,
-      items: group.items.map(item => ({
+      items: group.items.map((item) => ({
         ...item,
-        isActive: location.pathname === item.url
-      }))
-    }))
-  }
+        isActive: location.pathname === item.url,
+      })),
+    })),
+  };
 
   return (
     <Sidebar {...props}>
@@ -87,7 +99,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={item.isActive}>
-                      <Link to={item.url}>{item.icon && <item.icon />} {item.title}</Link>
+                      <Link to={item.url}>
+                        {item.icon && <item.icon />} {item.title}
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -98,5 +112,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
