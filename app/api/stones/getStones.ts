@@ -2,7 +2,11 @@ import prisma from '~/lib/prismaDb';
 
 export async function getStones() {
     try {
-        const stones = await prisma.stone.findMany();
+        const stones = await prisma.stone.findMany({
+            include: {
+                pictures: true
+            }
+        });
         return stones;
     } catch (error) {
         console.error("Erreur lors de la récupération des pierres:", error);

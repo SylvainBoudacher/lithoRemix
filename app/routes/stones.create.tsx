@@ -10,7 +10,9 @@ import { getRechargementTypes } from "~/api/types/rechargement/getRechargementTy
 
 import { Select, SelectItem } from "@heroui/select";
 import { ActionFunctionArgs } from "@remix-run/node";
+import { createClient } from "@supabase/supabase-js";
 import { useState } from "react";
+
 import { createStone } from "~/api/stones/createStone";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -26,6 +28,11 @@ export const loader = async () => {
   const chakras = await getChakras();
   const contraindications = await getContraindications();
 
+  const ENV = {
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  };
+
   return json({
     bodyEffects,
     spiritualEffects,
@@ -35,6 +42,7 @@ export const loader = async () => {
     craftedForms,
     chakras,
     contraindications,
+    ENV,
   });
 };
 
@@ -49,6 +57,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const craftedForms = formData.get("craftedForms");
   const chakras = formData.get("chakras");
   const contraindications = formData.get("contraindications");
+  const picture = formData.get("pictureName");
+
+  console.log(picture);
 
   if (!name) {
     return json({ error: "Le nom de la pierre est requis" }, { status: 400 });
@@ -79,6 +90,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       contraindicationIds: contraindications
         ? (contraindications as string).split(",")
         : undefined,
+      pictures: picture
+        ? [{ url: (process.env.SUPABASE_BUCKET_URL + "/" + picture) as string }]
+        : undefined,
     });
   } catch (error) {
     console.error(error);
@@ -101,6 +115,7 @@ export default function StonesCreate() {
     craftedForms,
     chakras,
     contraindications,
+    ENV,
   } = useLoaderData<typeof loader>();
 
   const [image, setImage] = useState<File | null>(null);
@@ -109,21 +124,36 @@ export default function StonesCreate() {
     const file = event.target.files?.[0];
     if (file) {
       setImage(file);
-      console.log(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (image) {
+      console.log(image);
+
+      const supabaseUrl = ENV.SUPABASE_URL || "";
+      const supabaseKey = ENV.SUPABASE_SERVICE_ROLE_KEY || "";
+
+      console.log(supabaseUrl, supabaseKey);
+
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      const { data, error } = await supabase.storage
+        .from("lithoRemixBuck")
+        .upload(`/stones/${image.name}`, image);
+
+      if (error) {
+        console.error(error);
+      } else {
+        console.log(data);
+      }
     }
   };
 
   return (
     <>
-      <div className="flex flex-col gap-6 mt-10">
-        <Input
-          name="image"
-          placeholder="Image"
-          className="max-w-xs"
-          accept="image/*"
-          type="file"
-          onChange={handleImageChange}
-        />
+      <div className="flex flex-row gap-6 mt-10">
+        {/* <Button onClick={handleUpload}>Upload</Button> */}
       </div>
       <fetcher.Form method="post" id="create-stone-form">
         <div className="flex flex-col gap-6 mt-10">
@@ -151,6 +181,15 @@ export default function StonesCreate() {
                   />
                 </div>
               </div>
+
+              <Input
+                name="pictureName"
+                placeholder="Image"
+                className="max-w-xs"
+                accept="image/*"
+                type="file"
+                onChange={handleImageChange}
+              />
             </div>
           </div>
 
@@ -275,7 +314,9 @@ export default function StonesCreate() {
           </div>
         </div>
 
-        <Button className="w-fit mt-10">Ajouter une pierre</Button>
+        <Button className="w-fit mt-10" type="submit" onClick={handleUpload}>
+          Ajouter une pierre
+        </Button>
       </fetcher.Form>
     </>
   );
