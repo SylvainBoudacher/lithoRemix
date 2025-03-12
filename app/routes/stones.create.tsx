@@ -18,6 +18,8 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 
+import { X } from "lucide-react";
+
 export const loader = async () => {
   const bodyEffects = await getBodyEffects();
   const spiritualEffects = await getSpiritualEffect();
@@ -183,26 +185,47 @@ export default function StonesCreate() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-6 w-full justify-start">
-            <div>
-              <p className="text-md font-semibold text-zinc-800 mb-3">Image</p>
-              <Input
+          <div className="flex flex-col w-full justify-start items-start">
+            <p className="text-md font-semibold text-zinc-800">Image</p>
+
+            <label
+              htmlFor="image-input"
+              className="relative mt-3 w-40 h-40 border-2 border-dashed border-gray-300 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              <input
+                id="image-input"
                 name="pictureName"
-                placeholder="Image"
-                className="max-w-xs"
-                accept="image/*"
                 type="file"
+                accept="image/*"
                 onChange={handleImageChange}
+                className="hidden"
               />
-              {/* {imagePreview && (
-                <div className=" bg-red-500 w-32 h-32">
+              {imagePreview ? (
+                <>
                   <img
                     src={imagePreview}
-                    className="rounded-lg shadow-sm object-cover h-24 w-24"
+                    alt="Pierre"
+                    className="object-cover w-full h-full rounded-lg object-center"
                   />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setImage(null);
+                      setImagePreview(null);
+                    }}
+                    className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 border border-zinc-600/40"
+                  >
+                    <X size={18} />
+                  </button>
+                </>
+              ) : (
+                <div className="text-center">
+                  <p className="text-sm text-gray-500">Cliquez ou déposez</p>
+                  <p className="text-sm text-gray-500">une image ici</p>
                 </div>
-              )} */}
-            </div>
+              )}
+            </label>
           </div>
         </div>
 
