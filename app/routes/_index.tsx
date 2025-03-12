@@ -35,7 +35,7 @@ export default function Index() {
               <CardBody className="overflow-visible p-0">
                 <Image
                   alt={stone.name}
-                  className="w-full object-cover h-[140px]"
+                  className="object-cover object-center h-40 w-40"
                   radius="none"
                   shadow="sm"
                   src={stone.pictures[0].url}

@@ -50,7 +50,7 @@ export default function StonesCreate() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      navigate(`/stones/${stone.id}/edit`);
+                      navigate(`/stones/list/${stone.id}/edit`);
                     }}
                   >
                     <Pencil />
@@ -76,7 +76,7 @@ export default function StonesCreate() {
             ))}
           </TableBody>
         </Table>
-        <div className="w-1/3 border border-dashed border-black bg-slate-100 rounded-xl h-[200px]">
+        <div className="w-1/3 border border-dashed border-black bg-slate-100 rounded-xl min-h-[200px]">
           <Outlet />
         </div>
       </div>

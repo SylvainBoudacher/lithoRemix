@@ -1,9 +1,9 @@
 import { Pencil } from "lucide-react";
 
-export default function EditIndex() {
+export default function StonesIndex() {
   return (
     <div className="flex flex-col justify-center items-center h-full text-zinc-500">
-      <p>Selectionner un effet </p>
+      <p>Selectionner une pierre </p>
       <div className="flex flex-row gap-2 items-center">
         <p>à modifier avec</p>{" "}
         <Pencil

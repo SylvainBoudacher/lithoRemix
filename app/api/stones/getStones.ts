@@ -16,7 +16,12 @@ export async function getStones() {
 
 export async function getStoneById(id: string) {
     try {
-        const stone = await prisma.stone.findUnique({ where: { id } });
+        const stone = await prisma.stone.findUnique({
+            where: { id },
+            include: {
+                pictures: true
+            }
+        });
         return stone;
     } catch (error) {
         console.error("Erreur lors de la récupération de la pierre:", error);
