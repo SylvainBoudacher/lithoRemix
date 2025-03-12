@@ -11,7 +11,10 @@ import {
 } from "@remix-run/react";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect } from "react";
-import { createOtherParam, OtherParamChoice } from "~/api/otherParams/createOther";
+import {
+  createOtherParam,
+  OtherParamChoice,
+} from "~/api/otherParams/createOther";
 import { getOtherParams } from "~/api/otherParams/getOther";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -36,7 +39,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!otherParams) {
     throw new Response("Not Found", { status: 404 });
   }
-  console.log(otherParams);
   return { otherParams };
 };
 
@@ -110,14 +112,17 @@ export default function Other() {
           <TableBody>
             {otherParams.map((otherParam) => (
               <TableRow key={otherParam.id}>
-                <TableCell className="w-[70px] truncate">{otherParam.id}</TableCell>
+                <TableCell className="w-[70px] truncate">
+                  {otherParam.id}
+                </TableCell>
                 <TableCell className="md:pl-20 font-bold">
-                    {(() => {
-                      if ('contraindicationName' in otherParam) return otherParam.contraindicationName;
-                      if ('form' in otherParam) return otherParam.form;
-                      if ('number' in otherParam) return otherParam.number;
-                      return '';
-                    })()}
+                  {(() => {
+                    if ("contraindicationName" in otherParam)
+                      return otherParam.contraindicationName;
+                    if ("form" in otherParam) return otherParam.form;
+                    if ("number" in otherParam) return otherParam.number;
+                    return "";
+                  })()}
                 </TableCell>
                 <TableCell className="flex flex-row gap-2 justify-end">
                   <Button

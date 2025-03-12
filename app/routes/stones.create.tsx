@@ -59,8 +59,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const contraindications = formData.get("contraindications");
   const picture = formData.get("pictureName");
 
-  console.log(picture);
-
   if (!name) {
     return json({ error: "Le nom de la pierre est requis" }, { status: 400 });
   }
@@ -129,23 +127,17 @@ export default function StonesCreate() {
 
   const handleUpload = async () => {
     if (image) {
-      console.log(image);
-
       const supabaseUrl = ENV.SUPABASE_URL || "";
       const supabaseKey = ENV.SUPABASE_SERVICE_ROLE_KEY || "";
 
-      console.log(supabaseUrl, supabaseKey);
-
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("lithoRemixBuck")
         .upload(`/stones/${image.name}`, image);
 
       if (error) {
         console.error(error);
-      } else {
-        console.log(data);
       }
     }
   };

@@ -7,8 +7,6 @@ export async function addImageToBucket(file: File) {
     .upload(`${file.name}`, file);
 if (error) {
     console.error(error);
-} else {
-    console.log(data);
 }
 return data;
 }

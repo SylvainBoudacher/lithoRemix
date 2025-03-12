@@ -1,4 +1,10 @@
-import { json, Outlet, useFetcher, useLoaderData, useNavigate, useParams } from "@remix-run/react";
+import {
+  json,
+  Outlet,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import { Pencil, Trash2 } from "lucide-react";
 import { getStones } from "~/api/stones/getStones";
 import { Button } from "~/components/ui/button";
@@ -17,17 +23,13 @@ export const loader = async () => {
   return json({ stones });
 };
 
-
 export default function StonesCreate() {
-  const params = useParams();
   const { stones } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-4">
-
-
       <div className="flex flex-row mt-10">
         <Table className="">
           <TableHeader>
@@ -38,7 +40,7 @@ export default function StonesCreate() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { stones.map((stone) => (
+            {stones.map((stone) => (
               <TableRow key={stone.id}>
                 <TableCell className="w-[70px] truncate">{stone.id}</TableCell>
                 <TableCell className="md:pl-20 font-bold">
@@ -78,9 +80,6 @@ export default function StonesCreate() {
           <Outlet />
         </div>
       </div>
-
-     
-     
     </div>
   );
 }

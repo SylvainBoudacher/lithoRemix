@@ -27,23 +27,17 @@ export default function Pictures() {
 
   const handleUpload = async () => {
     if (image) {
-      console.log(image);
-
       const supabaseUrl = ENV.SUPABASE_URL || "";
       const supabaseKey = ENV.SUPABASE_SERVICE_ROLE_KEY || "";
 
-      console.log(supabaseUrl, supabaseKey);
-
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("lithoRemixBuck")
         .upload(`/stones/${image.name}`, image);
 
       if (error) {
         console.error(error);
-      } else {
-        console.log(data);
       }
     }
   };

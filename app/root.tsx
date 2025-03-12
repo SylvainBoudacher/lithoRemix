@@ -5,11 +5,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation
+  useLocation,
 } from "@remix-run/react";
 
 import { HeroUIProvider } from "@heroui/react";
 import { Separator } from "@radix-ui/react-separator";
+import { useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
 import { AppSidebar } from "./components/app-sidebar";
 import {
   Breadcrumb,
@@ -17,13 +20,14 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from "./components/ui/breadcrumb";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "./components/ui/sidebar";
+import { Toaster } from "./components/ui/sonner";
 import "./tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -61,6 +65,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <ScrollRestoration />
           <Scripts />
         </HeroUIProvider>
+        <Toaster />
       </body>
     </html>
   );
@@ -69,37 +74,44 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export const translationPath = [
   {
     path: "body",
-    translation: "Corporel"
+    translation: "Corporel",
   },
   {
     path: "spiritual",
-    translation: "Spirituel"
+    translation: "Spirituel",
   },
   {
     path: "emotional",
-    translation: "Emotionnel"
+    translation: "Emotionnel",
   },
   {
     path: "craftedForms",
-    translation: "Forme artisanale"
+    translation: "Forme artisanale",
   },
   {
     path: "others",
-    translation: "Autres paramètres"
+    translation: "Autres paramètres",
   },
   {
     path: "stones",
-    translation: "Pierres"
+    translation: "Pierres",
   },
-]
-
+];
 
 export default function App() {
   const location = useLocation();
- 
+  const [cookies, , removeCookie] = useCookies(["toast"]);
+
+  useEffect(() => {
+    if (cookies.toast) {
+      toast(cookies.toast);
+      removeCookie("toast");
+    }
+  }, [cookies.toast]);
+
   const pathSegments = location.pathname
-    .split('/')
-    .filter(segment => segment !== '');
+    .split("/")
+    .filter((segment) => segment !== "");
 
   return (
     <SidebarProvider>
@@ -114,10 +126,13 @@ export default function App() {
                 {pathSegments.map((segment, index) => (
                   <>
                     <BreadcrumbItem key={index}>
-                      <BreadcrumbLink href={`/${pathSegments.slice(0, index + 1).join('/')}`}>
-                      <BreadcrumbPage className="text-zinc-700 capitalize">
-                        {translationPath.find(t => t.path === segment)?.translation || segment}
-                      </BreadcrumbPage>
+                      <BreadcrumbLink
+                        href={`/${pathSegments.slice(0, index + 1).join("/")}`}
+                      >
+                        <BreadcrumbPage className="text-zinc-700 capitalize">
+                          {translationPath.find((t) => t.path === segment)
+                            ?.translation || segment}
+                        </BreadcrumbPage>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     {index < pathSegments.length - 1 && (
