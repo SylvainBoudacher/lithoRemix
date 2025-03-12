@@ -10,9 +10,6 @@ import {
 
 import { HeroUIProvider } from "@heroui/react";
 import { Separator } from "@radix-ui/react-separator";
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { toast } from "sonner";
 import { AppSidebar } from "./components/app-sidebar";
 import {
   Breadcrumb,
@@ -100,15 +97,6 @@ export const translationPath = [
 
 export default function App() {
   const location = useLocation();
-  const [cookies, , removeCookie] = useCookies(["toast"]);
-
-  useEffect(() => {
-    if (cookies.toast) {
-      toast(cookies.toast);
-      removeCookie("toast");
-    }
-  }, [cookies.toast]);
-
   const pathSegments = location.pathname
     .split("/")
     .filter((segment) => segment !== "");
