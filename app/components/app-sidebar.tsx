@@ -1,7 +1,6 @@
 import { Link, useLocation } from "@remix-run/react";
 import {
   BookOpenText,
-  FileImage,
   Library,
   Pyramid,
   Sparkles,
@@ -57,11 +56,6 @@ const data = {
           title: "Autres paramètres",
           url: "/others",
           icon: BookOpenText,
-        },
-        {
-          title: "Images",
-          url: "/pictures",
-          icon: FileImage,
         },
       ],
     },

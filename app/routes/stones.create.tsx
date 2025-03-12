@@ -156,20 +156,22 @@ export default function StonesCreate() {
   return (
     <fetcher.Form method="post" id="create-stone-form">
       <div className="flex flex-col gap-6 mt-10">
-        <div className="flex flex-row gap-6">
-          <div className="flex flex-col gap-6 w-full max-w-2xl">
-            <div>
-              <p className="text-md font-semibold text-zinc-800 mb-3">
-                Nom de la pierre
-              </p>
-              <Input
-                name="name"
-                placeholder="Entrez le nom de la pierre"
-                className="max-w-xs"
-              />
+        <div className="flex flex-row gap-6 w-full">
+          <div className="flex flex-col gap-6 w-full max-w-xs">
+            <div className="flex flex-row gap-6 justify-between">
+              <div className="w-full max-w-xs">
+                <p className="text-md font-semibold text-zinc-800 mb-3">
+                  Nom de la pierre
+                </p>
+                <Input
+                  name="name"
+                  placeholder="Entrez le nom de la pierre"
+                  className="max-w-xs"
+                />
+              </div>
             </div>
 
-            <div className="flex flex-row gap-6 w-full justify-start">
+            <div className="flex flex-row gap-6 justify-between">
               <div className="w-full max-w-xs">
                 <p className="text-md font-semibold text-zinc-800 mb-3">
                   Description
@@ -179,28 +181,27 @@ export default function StonesCreate() {
                   placeholder="Entrez la description de la pierre"
                 />
               </div>
-              <div>
-                <p className="text-md font-semibold text-zinc-800 mb-3">
-                  Image
-                </p>
-                <Input
-                  name="pictureName"
-                  placeholder="Image"
-                  className="max-w-xs"
-                  accept="image/*"
-                  type="file"
-                  onChange={handleImageChange}
-                />
-                {imagePreview && (
-                  <div className="h-20 w-20">
-                    <img
-                      src={imagePreview}
-                      alt="Prévisualisation"
-                      className="max-w-xs rounded-lg shadow-sm object-cover"
-                    />
-                  </div>
-                )}
-              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-6 w-full justify-start">
+            <div>
+              <p className="text-md font-semibold text-zinc-800 mb-3">Image</p>
+              <Input
+                name="pictureName"
+                placeholder="Image"
+                className="max-w-xs"
+                accept="image/*"
+                type="file"
+                onChange={handleImageChange}
+              />
+              {/* {imagePreview && (
+                <div className=" bg-red-500 w-32 h-32">
+                  <img
+                    src={imagePreview}
+                    className="rounded-lg shadow-sm object-cover h-24 w-24"
+                  />
+                </div>
+              )} */}
             </div>
           </div>
         </div>
