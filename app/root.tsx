@@ -1,11 +1,13 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
+  Link,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLocation,
+  useRouteError,
 } from "@remix-run/react";
 
 import { HeroUIProvider } from "@heroui/react";
@@ -19,6 +21,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "./components/ui/breadcrumb";
+import { Button } from "./components/ui/button";
 import {
   SidebarInset,
   SidebarProvider,
@@ -94,6 +97,32 @@ export const translationPath = [
     translation: "Pierres",
   },
 ];
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html lang="en">
+      <head>
+        <title>Oh non!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <div className="flex h-screen w-screen items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <h1 className="text-6xl font-bold">Oh non!</h1>
+            <p className="text-lg">Une erreur est survenue</p>
+            <Button asChild>
+              <Link to="/">Retour à la page d&apos;accueil</Link>
+            </Button>
+          </div>
+        </div>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 export default function App() {
   const location = useLocation();
