@@ -61,17 +61,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const contraindications = formData.getAll("contraindications");
   const picture = formData.get("pictureName");
 
-  // for (const pair of formData.entries()) {
-  //   console.log(pair[0], pair[1]); // Affiche toutes les paires clé/valeur du formulaire
-  // }
-
-  if (bodyEffects) {
-    console.log(
-      "spiritualEffects =",
-      spiritualEffects ? spiritualEffects : undefined
-    );
-  }
-
   if (!name) {
     return json({ error: "Le nom de la pierre est requis" }, { status: 400 });
   }
