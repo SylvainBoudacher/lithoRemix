@@ -4,6 +4,7 @@ import { Form, json, redirect, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import { getBodyEffects } from "~/api/effects/bodyEffects/getBodyEffects";
+import { getSpiritualEffect } from "~/api/effects/spiritualEffect/getSpiritualEffect";
 import { getStoneById, getStoneName } from "~/api/stones/getStones";
 import { updateStone } from "~/api/stones/updateStone";
 import { Button } from "~/components/ui/button";
@@ -15,8 +16,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const idStone = params.id;
   const stoneName = formData.get("stoneName");
   const bodyEffects = formData.getAll("bodyEffects");
+  const spiritualEffects = formData.getAll("spiritualEffects");
 
+  console.log("spiritualEffects", spiritualEffects);
   if (!idStone) throw new Response("ID manquant", { status: 400 });
+
   const existingStone = await getStoneName(idStone);
   if (existingStone === null || existingStone === undefined)
     throw new Response("Pierres non trouvées", { status: 404 });
@@ -25,10 +29,16 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     await updateStone(idStone, {
       name: stoneName as string,
       bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
+      spiritualEffectIds: spiritualEffects
+        ? (spiritualEffects as string[])
+        : [],
     });
   } else {
     await updateStone(idStone, {
       bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
+      spiritualEffectIds: spiritualEffects
+        ? (spiritualEffects as string[])
+        : [],
     });
   }
 
@@ -39,19 +49,28 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.id) throw new Response("ID manquant", { status: 400 });
   const stone = await getStoneById(params.id);
   const bodyEffects = await getBodyEffects();
-  return json({ stone, bodyEffects });
+  const spiritualEffects = await getSpiritualEffect();
+  return json({ stone, bodyEffects, spiritualEffects });
 };
 
 export default function EditStone() {
-  const { stone, bodyEffects } = useLoaderData<typeof loader>();
+  const { stone, bodyEffects, spiritualEffects } =
+    useLoaderData<typeof loader>();
   const [stoneName, setStoneName] = useState(stone?.name);
+
   const [selectedEffects, setSelectedEffects] = useState(
     stone?.bodyEffects.map((effect) => effect.id) || []
+  );
+  const [selectedSpiritualEffects, setSelectedSpiritualEffects] = useState(
+    stone?.spiritualEffects.map((effect) => effect.id) || []
   );
 
   useEffect(() => {
     setStoneName(stone?.name);
     setSelectedEffects(stone?.bodyEffects.map((effect) => effect.id) || []);
+    setSelectedSpiritualEffects(
+      stone?.spiritualEffects.map((effect) => effect.id) || []
+    );
   }, [stone]);
 
   return (
@@ -83,10 +102,32 @@ export default function EditStone() {
             placeholder="Sélectionnez un effet corporel"
             selectionMode="multiple"
             selectedKeys={selectedEffects}
-            onSelectionChange={setSelectedEffects}
+            onSelectionChange={(keys) => {
+              const selectedKeys = Array.from(keys as Set<string>);
+              setSelectedEffects(selectedKeys);
+            }}
           >
             {bodyEffects.map((bodyEffect) => (
               <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            className="max-w-xs"
+            label="Spirituel"
+            name="spiritualEffects"
+            placeholder="Sélectionnez un effet spirituel"
+            selectionMode="multiple"
+            selectedKeys={selectedSpiritualEffects}
+            onSelectionChange={(keys) => {
+              const selectedKeys = Array.from(keys as Set<string>);
+              setSelectedSpiritualEffects(selectedKeys);
+            }}
+          >
+            {spiritualEffects.map((spiritualEffect) => (
+              <SelectItem key={spiritualEffect.id}>
+                {spiritualEffect.effect}
+              </SelectItem>
             ))}
           </Select>
         </div>

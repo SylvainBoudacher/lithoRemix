@@ -33,6 +33,7 @@ export const loader = async () => {
   const ENV = {
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_BUCKET_URL: process.env.SUPABASE_BUCKET_URL,
   };
 
   return json({
@@ -50,6 +51,9 @@ export const loader = async () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
+  const ENV = {
+    SUPABASE_BUCKET_URL: process.env.SUPABASE_BUCKET_URL || "",
+  };
   const name = formData.get("name");
   const bodyEffects = formData.getAll("bodyEffects");
   const emotionalEffects = formData.getAll("emotionalEffects");
@@ -66,6 +70,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   try {
+    const bucketUrl = ENV.SUPABASE_BUCKET_URL || "";
     await createStone({
       name: name as string,
       bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
@@ -86,7 +91,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       contraindicationIds: contraindications
         ? (contraindications as string[])
         : [],
-      pictures: picture ? [{ url: String(picture) }] : [],
+      pictures: picture ? [{ url: bucketUrl + picture }] : [],
     });
   } catch (error) {
     console.error(error);
