@@ -15,6 +15,8 @@ interface UpdateStoneInput {
 }
 
 export async function updateStone(id: string, input: UpdateStoneInput) {
+    console.log("id ", id);
+    console.log("Heure de modification:", new Date().toLocaleString());
     try {
         const updatedStone = await prisma.stone.update({
             where: { id },
@@ -30,8 +32,8 @@ export async function updateStone(id: string, input: UpdateStoneInput) {
                 chakraIds: input.chakraIds || [],
                 contraindicationIds: input.contraindicationIds || [],
                 pictures: input.pictures ? {
-                    deleteMany: {},  // Supprime les anciennes images
-                    create: input.pictures  // Crée les nouvelles images
+                    deleteMany: {},
+                    create: input.pictures
                 } : undefined
             },
             include: {

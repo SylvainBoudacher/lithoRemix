@@ -1,11 +1,10 @@
 import { Image, Select, SelectItem } from "@heroui/react";
-import { BodyEffect } from "@prisma/client";
 import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, json, redirect, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import { getBodyEffects } from "~/api/effects/bodyEffects/getBodyEffects";
-import { getStoneById } from "~/api/stones/getStones";
+import { getStoneById, getStoneName } from "~/api/stones/getStones";
 import { updateStone } from "~/api/stones/updateStone";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -13,28 +12,25 @@ import { Input } from "~/components/ui/input";
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
 
-  for (const pair of formData.entries()) {
-    console.log(pair[0], pair[1]); // Affiche toutes les paires clé/valeur du formulaire
-  }
-
-  const stoneName = formData.get("stoneName");
-  const bodyEffects = formData.get("bodyEffects");
-
   const idStone = params.id;
+  const stoneName = formData.get("stoneName");
+  const bodyEffects = formData.getAll("bodyEffects");
 
   if (!idStone) throw new Response("ID manquant", { status: 400 });
+  const existingStone = await getStoneName(idStone);
+  if (existingStone === null || existingStone === undefined)
+    throw new Response("Pierres non trouvées", { status: 404 });
 
-  console.log("idStone =", idStone);
-  console.log("--------------------------------");
-  console.log("stoneName =", stoneName);
-  console.log("--------------------------------");
-  console.log("bodyEffects =", bodyEffects);
-  console.log("--------------------------------");
-
-  await updateStone(idStone, {
-    name: stoneName as string,
-    bodyEffectIds: bodyEffects ? (bodyEffects as string).split(",") : undefined,
-  });
+  if (existingStone.name !== stoneName) {
+    await updateStone(idStone, {
+      name: stoneName as string,
+      bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
+    });
+  } else {
+    await updateStone(idStone, {
+      bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
+    });
+  }
 
   return redirect(`/stones/list`);
 };
@@ -49,21 +45,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function EditStone() {
   const { stone, bodyEffects } = useLoaderData<typeof loader>();
   const [stoneName, setStoneName] = useState(stone?.name);
-
-  const [selectedBodyEffects, setSelectedBodyEffects] = useState<BodyEffect[]>(
-    stone?.bodyEffects || []
+  const [selectedEffects, setSelectedEffects] = useState(
+    stone?.bodyEffects.map((effect) => effect.id) || []
   );
 
   useEffect(() => {
-    console.log("selectedBodyEffects =", selectedBodyEffects);
-  }, [selectedBodyEffects]);
-
-  useEffect(() => {
-    setSelectedBodyEffects(stone?.bodyEffects || []);
-  }, [stone]);
-
-  useEffect(() => {
     setStoneName(stone?.name);
+    setSelectedEffects(stone?.bodyEffects.map((effect) => effect.id) || []);
   }, [stone]);
 
   return (
@@ -94,6 +82,8 @@ export default function EditStone() {
             name="bodyEffects"
             placeholder="Sélectionnez un effet corporel"
             selectionMode="multiple"
+            selectedKeys={selectedEffects}
+            onSelectionChange={setSelectedEffects}
           >
             {bodyEffects.map((bodyEffect) => (
               <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
