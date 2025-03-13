@@ -51,15 +51,26 @@ export const loader = async () => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const name = formData.get("name");
-  const bodyEffects = formData.get("bodyEffects");
-  const emotionalEffects = formData.get("emotionalEffects");
-  const spiritualEffects = formData.get("spiritualEffects");
-  const rechargementTypes = formData.get("rechargementTypes");
-  const purificationTypes = formData.get("purificationTypes");
-  const craftedForms = formData.get("craftedForms");
-  const chakras = formData.get("chakras");
-  const contraindications = formData.get("contraindications");
+  const bodyEffects = formData.getAll("bodyEffects");
+  const emotionalEffects = formData.getAll("emotionalEffects");
+  const spiritualEffects = formData.getAll("spiritualEffects");
+  const rechargementTypes = formData.getAll("rechargementTypes");
+  const purificationTypes = formData.getAll("purificationTypes");
+  const craftedForms = formData.getAll("craftedForms");
+  const chakras = formData.getAll("chakras");
+  const contraindications = formData.getAll("contraindications");
   const picture = formData.get("pictureName");
+
+  // for (const pair of formData.entries()) {
+  //   console.log(pair[0], pair[1]); // Affiche toutes les paires clé/valeur du formulaire
+  // }
+
+  if (bodyEffects) {
+    console.log(
+      "spiritualEffects =",
+      spiritualEffects ? spiritualEffects : undefined
+    );
+  }
 
   if (!name) {
     return json({ error: "Le nom de la pierre est requis" }, { status: 400 });
@@ -68,31 +79,25 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     await createStone({
       name: name as string,
-      bodyEffectIds: bodyEffects
-        ? (bodyEffects as string).split(",")
-        : undefined,
+      bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
       emotionalEffectIds: emotionalEffects
-        ? (emotionalEffects as string).split(",")
-        : undefined,
+        ? (emotionalEffects as string[])
+        : [],
       spiritualEffectIds: spiritualEffects
-        ? (spiritualEffects as string).split(",")
-        : undefined,
+        ? (spiritualEffects as string[])
+        : [],
       rechargementTypeIds: rechargementTypes
-        ? (rechargementTypes as string).split(",")
-        : undefined,
+        ? (rechargementTypes as string[])
+        : [],
       purificationTypeIds: purificationTypes
-        ? (purificationTypes as string).split(",")
-        : undefined,
-      craftedFormIds: craftedForms
-        ? (craftedForms as string).split(",")
-        : undefined,
-      chakraIds: chakras ? (chakras as string).split(",") : undefined,
+        ? (purificationTypes as string[])
+        : [],
+      craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
+      chakraIds: chakras ? (chakras as string[]) : [],
       contraindicationIds: contraindications
-        ? (contraindications as string).split(",")
-        : undefined,
-      pictures: picture
-        ? [{ url: (process.env.SUPABASE_BUCKET_URL + "/" + picture) as string }]
-        : undefined,
+        ? (contraindications as string[])
+        : [],
+      pictures: picture ? [{ url: String(picture) }] : [],
     });
   } catch (error) {
     console.error(error);
@@ -335,6 +340,7 @@ export default function StonesCreate() {
               label="Contre-indications"
               name="contraindications"
               placeholder="Sélectionnez une contre-indication"
+              selectionMode="multiple"
             >
               {contraindications.map((contraindication) => (
                 <SelectItem key={contraindication.id}>

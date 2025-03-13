@@ -12,6 +12,11 @@ import { Input } from "~/components/ui/input";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
+
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1]); // Affiche toutes les paires clé/valeur du formulaire
+  }
+
   const stoneName = formData.get("stoneName");
   const bodyEffects = formData.get("bodyEffects");
 
