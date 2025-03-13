@@ -38,7 +38,7 @@ export default function Index() {
                   className="object-cover object-center h-40 w-40"
                   radius="none"
                   shadow="sm"
-                  src={stone.pictures[0].url}
+                  src={stone?.pictures[0]?.url}
                   width="100%"
                 />
               </CardBody>
