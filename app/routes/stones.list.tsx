@@ -5,7 +5,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Loader, Pencil, Trash2 } from "lucide-react";
 import { getStones } from "~/api/stones/getStones";
 import { Button } from "~/components/ui/button";
 
@@ -27,6 +27,9 @@ export default function StonesCreate() {
   const { stones } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const navigate = useNavigate();
+
+  const isDestroying = fetcher.state === "submitting";
+  const destroyingId = fetcher.formData?.get("id");
 
   return (
     <div className="flex flex-col gap-4">
@@ -67,8 +70,13 @@ export default function StonesCreate() {
                       }
                     }}
                   >
+                    <input type="hidden" name="id" value={stone.id} />
                     <Button variant="destructive" type="submit">
-                      <Trash2 />
+                      {isDestroying && destroyingId === stone.id ? (
+                        <Loader />
+                      ) : (
+                        <Trash2 />
+                      )}
                     </Button>
                   </fetcher.Form>
                 </TableCell>
