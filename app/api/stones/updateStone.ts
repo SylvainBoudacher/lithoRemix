@@ -15,8 +15,7 @@ interface UpdateStoneInput {
 }
 
 export async function updateStone(id: string, input: UpdateStoneInput) {
-    console.log("id ", id);
-    console.log("Heure de modification:", new Date().toLocaleString());
+
     try {
         const updatedStone = await prisma.stone.update({
             where: { id },
