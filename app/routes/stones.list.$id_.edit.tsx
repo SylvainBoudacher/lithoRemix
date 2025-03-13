@@ -4,11 +4,21 @@ import { Form, json, redirect, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import { getBodyEffects } from "~/api/effects/bodyEffects/getBodyEffects";
+import { getEmotionalEffect } from "~/api/effects/emotionalEffect/getEmotionalEffect";
 import { getSpiritualEffect } from "~/api/effects/spiritualEffect/getSpiritualEffect";
 import { getStoneById, getStoneName } from "~/api/stones/getStones";
 import { updateStone } from "~/api/stones/updateStone";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  if (!params.id) throw new Response("ID manquant", { status: 400 });
+  const stone = await getStoneById(params.id);
+  const bodyEffects = await getBodyEffects();
+  const spiritualEffects = await getSpiritualEffect();
+  const emotionalEffects = await getEmotionalEffect();
+  return json({ stone, bodyEffects, spiritualEffects, emotionalEffects });
+};
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -17,8 +27,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const stoneName = formData.get("stoneName");
   const bodyEffects = formData.getAll("bodyEffects");
   const spiritualEffects = formData.getAll("spiritualEffects");
+  const emotionalEffects = formData.getAll("emotionalEffects");
 
-  console.log("spiritualEffects", spiritualEffects);
   if (!idStone) throw new Response("ID manquant", { status: 400 });
 
   const existingStone = await getStoneName(idStone);
@@ -32,6 +42,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       spiritualEffectIds: spiritualEffects
         ? (spiritualEffects as string[])
         : [],
+      emotionalEffectIds: emotionalEffects
+        ? (emotionalEffects as string[])
+        : [],
     });
   } else {
     await updateStone(idStone, {
@@ -39,22 +52,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       spiritualEffectIds: spiritualEffects
         ? (spiritualEffects as string[])
         : [],
+      emotionalEffectIds: emotionalEffects
+        ? (emotionalEffects as string[])
+        : [],
     });
   }
 
   return redirect(`/stones/list`);
 };
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  if (!params.id) throw new Response("ID manquant", { status: 400 });
-  const stone = await getStoneById(params.id);
-  const bodyEffects = await getBodyEffects();
-  const spiritualEffects = await getSpiritualEffect();
-  return json({ stone, bodyEffects, spiritualEffects });
-};
-
 export default function EditStone() {
-  const { stone, bodyEffects, spiritualEffects } =
+  const { stone, bodyEffects, spiritualEffects, emotionalEffects } =
     useLoaderData<typeof loader>();
   const [stoneName, setStoneName] = useState(stone?.name);
 
@@ -64,12 +72,18 @@ export default function EditStone() {
   const [selectedSpiritualEffects, setSelectedSpiritualEffects] = useState(
     stone?.spiritualEffects.map((effect) => effect.id) || []
   );
+  const [selectedEmotionalEffects, setSelectedEmotionalEffects] = useState(
+    stone?.emotionalEffects.map((effect) => effect.id) || []
+  );
 
   useEffect(() => {
     setStoneName(stone?.name);
     setSelectedEffects(stone?.bodyEffects.map((effect) => effect.id) || []);
     setSelectedSpiritualEffects(
       stone?.spiritualEffects.map((effect) => effect.id) || []
+    );
+    setSelectedEmotionalEffects(
+      stone?.emotionalEffects.map((effect) => effect.id) || []
     );
   }, [stone]);
 
@@ -127,6 +141,25 @@ export default function EditStone() {
             {spiritualEffects.map((spiritualEffect) => (
               <SelectItem key={spiritualEffect.id}>
                 {spiritualEffect.effect}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            className="max-w-xs"
+            label="Emotionnel"
+            name="emotionalEffects"
+            placeholder="Sélectionnez un effet émotionnel"
+            selectionMode="multiple"
+            selectedKeys={selectedEmotionalEffects}
+            onSelectionChange={(keys) => {
+              const selectedKeys = Array.from(keys as Set<string>);
+              setSelectedEmotionalEffects(selectedKeys);
+            }}
+          >
+            {emotionalEffects.map((emotionalEffect) => (
+              <SelectItem key={emotionalEffect.id}>
+                {emotionalEffect.effect}
               </SelectItem>
             ))}
           </Select>
