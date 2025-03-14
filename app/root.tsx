@@ -143,13 +143,15 @@ export default function App() {
                 {pathSegments.map((segment, index) => (
                   <>
                     <BreadcrumbItem key={index}>
-                      <BreadcrumbLink
-                        href={`/${pathSegments.slice(0, index + 1).join("/")}`}
-                      >
-                        <BreadcrumbPage className="text-zinc-700 capitalize">
-                          {translationPath.find((t) => t.path === segment)
-                            ?.translation || segment}
-                        </BreadcrumbPage>
+                      <BreadcrumbLink asChild>
+                        <Link
+                          to={`/${pathSegments.slice(0, index + 1).join("/")}`}
+                        >
+                          <BreadcrumbPage className="text-zinc-700 capitalize">
+                            {translationPath.find((t) => t.path === segment)
+                              ?.translation || segment}
+                          </BreadcrumbPage>
+                        </Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     {index < pathSegments.length - 1 && (
