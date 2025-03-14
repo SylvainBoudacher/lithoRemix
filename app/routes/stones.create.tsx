@@ -325,7 +325,9 @@ export default function StonesCreate() {
               selectionMode="multiple"
             >
               {chakras.map((chakra) => (
-                <SelectItem key={chakra.id}>{chakra.number}</SelectItem>
+                <SelectItem key={chakra.id}>
+                  {chakra.number.toString()}
+                </SelectItem>
               ))}
             </Select>
 
