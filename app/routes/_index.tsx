@@ -1,7 +1,16 @@
-import { Card, CardBody, CardFooter, Image } from "@heroui/react";
-import { json, type MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { getStones } from "~/api/stones/getStones";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  Image,
+  Select,
+  SelectItem,
+} from "@heroui/react";
+import { json, LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import { getBodyEffectsWithStones } from "~/api/effects/bodyEffects/getBodyEffects";
+import { searchStones } from "~/api/stones/getStones";
+import { Input } from "~/components/ui/input";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,20 +19,59 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async () => {
-  const stones = await getStones();
-  return json({ stones });
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const bodyEffectsStones = await getBodyEffectsWithStones();
+
+  const url = new URL(request.url);
+  const stoneName = url.searchParams.get("stoneName") || "";
+  const bodyEffects = url.searchParams.get("bodyEffects") || [];
+
+  const stones = await searchStones({
+    query: stoneName,
+  });
+  return json({ stones, stoneName, bodyEffects, bodyEffectsStones });
 };
 
 export default function Index() {
-  const { stones } = useLoaderData<typeof loader>();
+  const { stones, stoneName, bodyEffectsStones } =
+    useLoaderData<typeof loader>();
+  const submit = useSubmit();
 
   return (
     <div className="flex flex-col gap-4 p-6">
       <h1 className="text-3xl font-bold">Bienvenue sur LithoDico</h1>
 
-      <div className="flex flex-col gap-4">
-        <div className="w-fit">
+      {/* FORM */}
+      <div className="pt-6">
+        <Form method="get" onChange={(event) => submit(event.currentTarget)}>
+          <div className="flex flex-row gap-4 items-center">
+            <Input
+              id="stoneName"
+              name="stoneName"
+              type="text"
+              defaultValue={stoneName || ""}
+              placeholder="Rechercher une pierre"
+              className="w-fit"
+            />
+
+            <Select
+              className="max-w-xs"
+              label="Corporel"
+              name="bodyEffects"
+              placeholder="Sélectionnez un effet corporel"
+              selectionMode="multiple"
+            >
+              {bodyEffectsStones.map((bodyEffect) => (
+                <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
+              ))}
+            </Select>
+          </div>
+        </Form>
+      </div>
+
+      {/* LIST OF STONES */}
+      <div className="pt-6">
+        <div className="flex flex-row gap-6 flex-wrap">
           {stones.map((stone) => (
             <Card
               key={stone.id}
