@@ -1,3 +1,4 @@
+import { Spinner } from "@heroui/react";
 import {
   json,
   Outlet,
@@ -5,7 +6,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
-import { Loader, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { getStones } from "~/api/stones/getStones";
 import { Button } from "~/components/ui/button";
 
@@ -73,7 +74,7 @@ export default function StonesCreate() {
                     <input type="hidden" name="id" value={stone.id} />
                     <Button variant="destructive" type="submit">
                       {isDestroying && destroyingId === stone.id ? (
-                        <Loader />
+                        <Spinner size="sm" color="warning" />
                       ) : (
                         <Trash2 />
                       )}
