@@ -1,6 +1,8 @@
-import { Image, Select, SelectItem } from "@heroui/react";
+import { Select, SelectItem } from "@heroui/react";
 import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Form, json, redirect, useLoaderData } from "@remix-run/react";
+import { createClient } from "@supabase/supabase-js";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { getBodyEffects } from "~/api/effects/bodyEffects/getBodyEffects";
@@ -25,6 +27,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const purificationTypes = await getPurificationTypes();
   const craftedForms = await getCraftedForms();
   const chakras = await getChakras();
+  const ENV = {
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_BUCKET_URL: process.env.SUPABASE_BUCKET_URL,
+  };
   return json({
     stone,
     bodyEffects,
@@ -34,11 +41,16 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     purificationTypes,
     craftedForms,
     chakras,
+    ENV,
   });
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
+
+  const ENV = {
+    SUPABASE_BUCKET_URL: process.env.SUPABASE_BUCKET_URL || "",
+  };
 
   const idStone = params.id;
   const stoneName = formData.get("stoneName");
@@ -49,13 +61,18 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const purificationTypes = formData.getAll("purificationTypes");
   const craftedForms = formData.getAll("craftedForms");
   const chakras = formData.getAll("chakras");
+  const pictureName = formData.get("pictureName");
+
   if (!idStone) throw new Response("ID manquant", { status: 400 });
 
   const existingStone = await getStoneName(idStone);
   if (existingStone === null || existingStone === undefined)
     throw new Response("Pierres non trouvées", { status: 404 });
 
-  if (existingStone.name !== stoneName) {
+  const changeStoneName = existingStone.name !== stoneName;
+  const bucketUrl = ENV.SUPABASE_BUCKET_URL || "";
+
+  if (changeStoneName) {
     await updateStone(idStone, {
       name: stoneName as string,
       bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
@@ -73,6 +90,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         : [],
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
+      pictures: pictureName
+        ? [{ url: (bucketUrl + pictureName) as string }]
+        : [],
     });
   } else {
     await updateStone(idStone, {
@@ -91,6 +111,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         : [],
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
+      pictures: pictureName
+        ? [{ url: (bucketUrl + pictureName) as string }]
+        : [],
     });
   }
 
@@ -107,6 +130,7 @@ export default function EditStone() {
     purificationTypes,
     craftedForms,
     chakras,
+    ENV,
   } = useLoaderData<typeof loader>();
   const [stoneName, setStoneName] = useState(stone?.name);
 
@@ -132,6 +156,59 @@ export default function EditStone() {
     stone?.chakras.map((effect) => effect.id) || []
   );
 
+  const [originalImage, setOriginalImage] = useState<string | null>(
+    stone?.pictures[0]?.url || null
+  );
+  const [newImage, setNewImage] = useState<File | null>(null);
+
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    stone?.pictures[0]?.url || null
+  );
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setNewImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (newImage || originalImage) {
+      const supabaseUrl = ENV.SUPABASE_URL || "";
+      const supabaseKey = ENV.SUPABASE_SERVICE_ROLE_KEY || "";
+
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      if (originalImage && newImage) {
+        const originalImageName = originalImage.split("/").pop();
+
+        const { error, data } = await supabase.storage
+          .from("lithoRemixBuck")
+          .remove([`/stones/${originalImageName}`]);
+        if (data) {
+          console.error(data);
+        }
+        if (error) {
+          console.error(error);
+        }
+      }
+
+      if (newImage) {
+        const { error, data } = await supabase.storage
+          .from("lithoRemixBuck")
+          .upload(`/stones/${newImage.name}`, newImage);
+        if (data) {
+          console.log(data);
+        }
+        if (error) {
+          console.error(error);
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     setStoneName(stone?.name);
     setSelectedEffects(stone?.bodyEffects.map((effect) => effect.id) || []);
@@ -151,22 +228,62 @@ export default function EditStone() {
       stone?.craftedForms.map((effect) => effect.id) || []
     );
     setSelectedChakras(stone?.chakras.map((effect) => effect.id) || []);
+    setImagePreview(stone?.pictures[0]?.url || null);
+    setOriginalImage(stone?.pictures[0]?.url || null);
   }, [stone]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview && imagePreview !== stone?.pictures[0]?.url) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview, stone?.pictures]);
 
   return (
     <Form method="post" id="effect-form" className="w-full">
-      <div className="p-6 flex  flex-col">
+      <div className="p-6 flex flex-col">
         <h1 className="text-xl font-bold mb-3 pb-3">Edition</h1>
 
         <div className="flex flex-col gap-2">
-          <Image
-            src={stone?.pictures[0]?.url || ""}
-            alt={stone?.name || ""}
-            width={80}
-            height={80}
-            radius="sm"
-            className="object-cover object-center"
-          />
+          <label
+            htmlFor="image-input"
+            className="relative w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+          >
+            <input
+              id="image-input"
+              name="pictureName"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            {imagePreview ? (
+              <>
+                <img
+                  src={imagePreview}
+                  alt={stone?.name || ""}
+                  className="object-cover w-full h-full rounded-lg object-center"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setNewImage(null);
+                    setImagePreview(null);
+                  }}
+                  className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 border border-zinc-600/40"
+                >
+                  <X size={18} />
+                </button>
+              </>
+            ) : (
+              <div className="text-center">
+                <p className="text-sm text-gray-500">Cliquez ou déposez</p>
+                <p className="text-sm text-gray-500">une image ici</p>
+              </div>
+            )}
+          </label>
 
           <p className="text-sm text-zinc-800">Nom</p>
           <Input
@@ -304,7 +421,9 @@ export default function EditStone() {
             ))}
           </Select>
         </div>
-        <Button type="submit">Enregistrer</Button>
+        <Button type="submit" onClick={handleUpload}>
+          Enregistrer
+        </Button>
       </div>
     </Form>
   );
