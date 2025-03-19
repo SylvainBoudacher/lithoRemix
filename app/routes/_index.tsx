@@ -93,10 +93,11 @@ export default function Index() {
 
       {/* FORM */}
       <div className="pt-6">
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-col gap-4 items-start">
           <Autocomplete
-            className="max-w-xs"
+            size="sm"
             label="Pierres"
+            className="min-w-xs max-w-xs"
             placeholder="Rechercher une pierre"
             onSelectionChange={(value) =>
               setSearchStoneName(value ? String(value) : "")
@@ -106,60 +107,68 @@ export default function Index() {
               <AutocompleteItem key={stoneName}>{stoneName}</AutocompleteItem>
             ))}
           </Autocomplete>
-          <Select
-            className="max-w-xs"
-            label="Corporel"
-            name="bodyEffects"
-            placeholder="Sélectionnez un effet corporel"
-            selectionMode="multiple"
-            onSelectionChange={(value) => {
-              const selectedValues = Array.from(value as Set<string>);
-              setBodyEffectsToFilter(selectedValues);
-            }}
-            value={bodyEffectsToFilter}
-          >
-            {bodyEffectsStones.map((bodyEffect) => (
-              <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
-            ))}
-          </Select>
 
-          <Select
-            className="max-w-xs"
-            label="Émotionnel"
-            name="emotionalEffects"
-            placeholder="Sélectionnez un effet émotionnel"
-            selectionMode="multiple"
-            onSelectionChange={(value) => {
-              const selectedValues = Array.from(value as Set<string>);
-              setEmotionalEffectsToFilter(selectedValues);
-            }}
-            value={emotionalEffectsToFilter}
-          >
-            {emotionalEffectsStones.map((emotionalEffect) => (
-              <SelectItem key={emotionalEffect.id}>
-                {emotionalEffect.effect}
-              </SelectItem>
-            ))}
-          </Select>
+          <p className="text-sm font-bold text-zinc-800">Effets</p>
 
-          <Select
-            className="max-w-xs"
-            label="Spirituel"
-            name="spiritualEffects"
-            placeholder="Sélectionnez un effet spirituel"
-            selectionMode="multiple"
-            onSelectionChange={(value) => {
-              const selectedValues = Array.from(value as Set<string>);
-              setSpiritualEffectsToFilter(selectedValues);
-            }}
-            value={spiritualEffectsToFilter}
-          >
-            {spiritualEffectsStones.map((spiritualEffect) => (
-              <SelectItem key={spiritualEffect.id}>
-                {spiritualEffect.effect}
-              </SelectItem>
-            ))}
-          </Select>
+          <div className="flex flex-row gap-4 -mt-2 w-full">
+            <Select
+              size="sm"
+              className="max-w-xs"
+              label="Corporel"
+              name="bodyEffects"
+              placeholder="Sélectionnez un effet corporel"
+              selectionMode="multiple"
+              onSelectionChange={(value) => {
+                const selectedValues = Array.from(value as Set<string>);
+                setBodyEffectsToFilter(selectedValues);
+              }}
+              value={bodyEffectsToFilter}
+            >
+              {bodyEffectsStones.map((bodyEffect) => (
+                <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              size="sm"
+              label="Émotionnel"
+              className="max-w-xs"
+              name="emotionalEffects"
+              placeholder="Sélectionnez un effet émotionnel"
+              selectionMode="multiple"
+              onSelectionChange={(value) => {
+                const selectedValues = Array.from(value as Set<string>);
+                setEmotionalEffectsToFilter(selectedValues);
+              }}
+              value={emotionalEffectsToFilter}
+            >
+              {emotionalEffectsStones.map((emotionalEffect) => (
+                <SelectItem key={emotionalEffect.id}>
+                  {emotionalEffect.effect}
+                </SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              size="sm"
+              label="Spirituel"
+              className="max-w-xs"
+              name="spiritualEffects"
+              placeholder="Sélectionnez un effet spirituel"
+              selectionMode="multiple"
+              onSelectionChange={(value) => {
+                const selectedValues = Array.from(value as Set<string>);
+                setSpiritualEffectsToFilter(selectedValues);
+              }}
+              value={spiritualEffectsToFilter}
+            >
+              {spiritualEffectsStones.map((spiritualEffect) => (
+                <SelectItem key={spiritualEffect.id}>
+                  {spiritualEffect.effect}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
         </div>
       </div>
 
