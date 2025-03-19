@@ -1,4 +1,6 @@
 import {
+  Autocomplete,
+  AutocompleteItem,
   Card,
   CardBody,
   CardFooter,
@@ -7,10 +9,10 @@ import {
   SelectItem,
 } from "@heroui/react";
 import { json, LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
-import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { getBodyEffectsWithStones } from "~/api/effects/bodyEffects/getBodyEffects";
-import { searchStones } from "~/api/stones/getStones";
-import { Input } from "~/components/ui/input";
+import { getStones } from "~/api/stones/getStones";
 
 export const meta: MetaFunction = () => {
   return [
@@ -23,19 +25,41 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const bodyEffectsStones = await getBodyEffectsWithStones();
 
   const url = new URL(request.url);
-  const stoneName = url.searchParams.get("stoneName") || "";
-  const bodyEffects = url.searchParams.get("bodyEffects") || [];
 
-  const stones = await searchStones({
-    query: stoneName,
-  });
-  return json({ stones, stoneName, bodyEffects, bodyEffectsStones });
+  const bodyEffects = url.searchParams.get("bodyEffects") || [];
+  const stones = await getStones();
+
+  return json({ stones, bodyEffects, bodyEffectsStones });
 };
 
 export default function Index() {
-  const { stones, stoneName, bodyEffectsStones } =
-    useLoaderData<typeof loader>();
-  const submit = useSubmit();
+  const { stones, bodyEffectsStones } = useLoaderData<typeof loader>();
+
+  const stoneNames = stones.map((stone) => stone.name);
+  const [searchStoneName, setSearchStoneName] = useState<string>("");
+  const [bodyEffectsToFilter, setBodyEffectsToFilter] = useState<string[]>([]);
+
+  const finalFilteredStones = stones
+    .filter(
+      (stone) =>
+        // Affiche toutes les pierres si searchStoneName est vide
+        searchStoneName === "" ||
+        stone.name.toLowerCase().includes(searchStoneName.toLowerCase())
+    )
+    .filter(
+      (stone) =>
+        // Filtre par effets corporels si bodyEffectsToFilter n'est pas vide
+        bodyEffectsToFilter.length === 0 ||
+        bodyEffectsToFilter.some((effect) =>
+          stone.bodyEffectIds.includes(effect)
+        )
+    );
+
+  useEffect(() => {
+    console.log(searchStoneName);
+    console.log(finalFilteredStones);
+    console.log(!searchStoneName);
+  }, [searchStoneName, finalFilteredStones]);
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -43,36 +67,42 @@ export default function Index() {
 
       {/* FORM */}
       <div className="pt-6">
-        <Form method="get" onChange={(event) => submit(event.currentTarget)}>
-          <div className="flex flex-row gap-4 items-center">
-            <Input
-              id="stoneName"
-              name="stoneName"
-              type="text"
-              defaultValue={stoneName || ""}
-              placeholder="Rechercher une pierre"
-              className="w-fit"
-            />
-
-            <Select
-              className="max-w-xs"
-              label="Corporel"
-              name="bodyEffects"
-              placeholder="Sélectionnez un effet corporel"
-              selectionMode="multiple"
-            >
-              {bodyEffectsStones.map((bodyEffect) => (
-                <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
-              ))}
-            </Select>
-          </div>
-        </Form>
+        <div className="flex flex-row gap-4 items-center">
+          <Autocomplete
+            className="max-w-xs"
+            label="Pierres"
+            placeholder="Rechercher une pierre"
+            onSelectionChange={(value) =>
+              setSearchStoneName(value ? String(value) : "")
+            }
+          >
+            {stoneNames.map((stoneName) => (
+              <AutocompleteItem key={stoneName}>{stoneName}</AutocompleteItem>
+            ))}
+          </Autocomplete>
+          <Select
+            className="max-w-xs"
+            label="Corporel"
+            name="bodyEffects"
+            placeholder="Sélectionnez un effet corporel"
+            selectionMode="multiple"
+            onSelectionChange={(value) => {
+              const selectedValues = Array.from(value as Set<string>);
+              setBodyEffectsToFilter(selectedValues);
+            }}
+            value={bodyEffectsToFilter}
+          >
+            {bodyEffectsStones.map((bodyEffect) => (
+              <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
+            ))}
+          </Select>
+        </div>
       </div>
 
       {/* LIST OF STONES */}
       <div className="pt-6">
         <div className="flex flex-row gap-6 flex-wrap">
-          {stones.map((stone) => (
+          {finalFilteredStones.map((stone) => (
             <Card
               key={stone.id}
               isPressable
