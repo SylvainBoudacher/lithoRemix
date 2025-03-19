@@ -40,7 +40,7 @@ export async function getStoneName(id: string) {
     try {
         const stone = await prisma.stone.findUnique({
             where: { id },
-            select: { name: true },
+            select: { name: true, pictures: true },
         });
         return stone;
     } catch (error) {

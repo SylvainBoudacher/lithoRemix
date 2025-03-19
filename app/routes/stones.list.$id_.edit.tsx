@@ -17,6 +17,8 @@ import { getRechargementTypes } from "~/api/types/rechargement/getRechargementTy
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
+// TODO : Probleme lors de la modification d'une image - si je change un paramètre, l'image est supprimée
+
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!params.id) throw new Response("ID manquant", { status: 400 });
   const stone = await getStoneById(params.id);
@@ -72,7 +74,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const changeStoneName = existingStone.name !== stoneName;
   const bucketUrl = ENV.SUPABASE_BUCKET_URL || "";
 
-  if (changeStoneName) {
+  const pictures = pictureName
+    ? [{ url: (bucketUrl + pictureName) as string }]
+    : existingStone.pictures;
+
+  if (changeStoneName || pictureName) {
     await updateStone(idStone, {
       name: stoneName as string,
       bodyEffectIds: bodyEffects ? (bodyEffects as string[]) : [],
@@ -90,9 +96,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         : [],
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
-      pictures: pictureName
-        ? [{ url: (bucketUrl + pictureName) as string }]
-        : [],
+      pictures: pictureName ? pictures : undefined,
     });
   } else {
     await updateStone(idStone, {
@@ -111,9 +115,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         : [],
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
-      pictures: pictureName
-        ? [{ url: (bucketUrl + pictureName) as string }]
-        : [],
     });
   }
 

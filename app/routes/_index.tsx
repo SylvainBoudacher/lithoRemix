@@ -13,6 +13,7 @@ import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { getBodyEffectsWithStones } from "~/api/effects/bodyEffects/getBodyEffects";
 import { getEmotionalEffectsWithStones } from "~/api/effects/emotionalEffect/getEmotionalEffect";
+import { getSpiritualEffectsWithStones } from "~/api/effects/spiritualEffect/getSpiritualEffect";
 import { getStones } from "~/api/stones/getStones";
 
 export const meta: MetaFunction = () => {
@@ -25,20 +26,33 @@ export const meta: MetaFunction = () => {
 export const loader = async () => {
   const bodyEffectsStones = await getBodyEffectsWithStones();
   const emotionalEffectsStones = await getEmotionalEffectsWithStones();
+  const spiritualEffectsStones = await getSpiritualEffectsWithStones();
 
   const stones = await getStones();
 
-  return json({ stones, bodyEffectsStones, emotionalEffectsStones });
+  return json({
+    stones,
+    bodyEffectsStones,
+    emotionalEffectsStones,
+    spiritualEffectsStones,
+  });
 };
 
 export default function Index() {
-  const { stones, bodyEffectsStones, emotionalEffectsStones } =
-    useLoaderData<typeof loader>();
+  const {
+    stones,
+    bodyEffectsStones,
+    emotionalEffectsStones,
+    spiritualEffectsStones,
+  } = useLoaderData<typeof loader>();
 
   const stoneNames = stones.map((stone) => stone.name);
   const [searchStoneName, setSearchStoneName] = useState<string>("");
   const [bodyEffectsToFilter, setBodyEffectsToFilter] = useState<string[]>([]);
   const [emotionalEffectsToFilter, setEmotionalEffectsToFilter] = useState<
+    string[]
+  >([]);
+  const [spiritualEffectsToFilter, setSpiritualEffectsToFilter] = useState<
     string[]
   >([]);
 
@@ -64,8 +78,15 @@ export default function Index() {
         emotionalEffectsToFilter.some((effect) =>
           stone.emotionalEffectIds.includes(effect)
         )
+    )
+    .filter(
+      (stone) =>
+        // Filtre par effets spirituels si spiritualEffectsToFilter n'est pas vide
+        spiritualEffectsToFilter.length === 0 ||
+        spiritualEffectsToFilter.some((effect) =>
+          stone.spiritualEffectIds.includes(effect)
+        )
     );
-
   return (
     <div className="flex flex-col gap-4 p-6">
       <h1 className="text-3xl font-bold">Bienvenue sur LithoDico</h1>
@@ -117,6 +138,25 @@ export default function Index() {
             {emotionalEffectsStones.map((emotionalEffect) => (
               <SelectItem key={emotionalEffect.id}>
                 {emotionalEffect.effect}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            className="max-w-xs"
+            label="Spirituel"
+            name="spiritualEffects"
+            placeholder="Sélectionnez un effet spirituel"
+            selectionMode="multiple"
+            onSelectionChange={(value) => {
+              const selectedValues = Array.from(value as Set<string>);
+              setSpiritualEffectsToFilter(selectedValues);
+            }}
+            value={spiritualEffectsToFilter}
+          >
+            {spiritualEffectsStones.map((spiritualEffect) => (
+              <SelectItem key={spiritualEffect.id}>
+                {spiritualEffect.effect}
               </SelectItem>
             ))}
           </Select>
