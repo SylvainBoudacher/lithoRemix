@@ -8,7 +8,7 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import { json, LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { getBodyEffectsWithStones } from "~/api/effects/bodyEffects/getBodyEffects";
@@ -22,7 +22,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async () => {
   const bodyEffectsStones = await getBodyEffectsWithStones();
   const emotionalEffectsStones = await getEmotionalEffectsWithStones();
 
