@@ -10,8 +10,9 @@ import {
 } from "@heroui/react";
 import { json, LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getBodyEffectsWithStones } from "~/api/effects/bodyEffects/getBodyEffects";
+import { getEmotionalEffectsWithStones } from "~/api/effects/emotionalEffect/getEmotionalEffect";
 import { getStones } from "~/api/stones/getStones";
 
 export const meta: MetaFunction = () => {
@@ -23,21 +24,23 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const bodyEffectsStones = await getBodyEffectsWithStones();
+  const emotionalEffectsStones = await getEmotionalEffectsWithStones();
 
-  const url = new URL(request.url);
-
-  const bodyEffects = url.searchParams.get("bodyEffects") || [];
   const stones = await getStones();
 
-  return json({ stones, bodyEffects, bodyEffectsStones });
+  return json({ stones, bodyEffectsStones, emotionalEffectsStones });
 };
 
 export default function Index() {
-  const { stones, bodyEffectsStones } = useLoaderData<typeof loader>();
+  const { stones, bodyEffectsStones, emotionalEffectsStones } =
+    useLoaderData<typeof loader>();
 
   const stoneNames = stones.map((stone) => stone.name);
   const [searchStoneName, setSearchStoneName] = useState<string>("");
   const [bodyEffectsToFilter, setBodyEffectsToFilter] = useState<string[]>([]);
+  const [emotionalEffectsToFilter, setEmotionalEffectsToFilter] = useState<
+    string[]
+  >([]);
 
   const finalFilteredStones = stones
     .filter(
@@ -53,13 +56,15 @@ export default function Index() {
         bodyEffectsToFilter.some((effect) =>
           stone.bodyEffectIds.includes(effect)
         )
+    )
+    .filter(
+      (stone) =>
+        // Filtre par effets émotionnels si emotionalEffectsToFilter n'est pas vide
+        emotionalEffectsToFilter.length === 0 ||
+        emotionalEffectsToFilter.some((effect) =>
+          stone.emotionalEffectIds.includes(effect)
+        )
     );
-
-  useEffect(() => {
-    console.log(searchStoneName);
-    console.log(finalFilteredStones);
-    console.log(!searchStoneName);
-  }, [searchStoneName, finalFilteredStones]);
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -94,6 +99,25 @@ export default function Index() {
           >
             {bodyEffectsStones.map((bodyEffect) => (
               <SelectItem key={bodyEffect.id}>{bodyEffect.effect}</SelectItem>
+            ))}
+          </Select>
+
+          <Select
+            className="max-w-xs"
+            label="Émotionnel"
+            name="emotionalEffects"
+            placeholder="Sélectionnez un effet émotionnel"
+            selectionMode="multiple"
+            onSelectionChange={(value) => {
+              const selectedValues = Array.from(value as Set<string>);
+              setEmotionalEffectsToFilter(selectedValues);
+            }}
+            value={emotionalEffectsToFilter}
+          >
+            {emotionalEffectsStones.map((emotionalEffect) => (
+              <SelectItem key={emotionalEffect.id}>
+                {emotionalEffect.effect}
+              </SelectItem>
             ))}
           </Select>
         </div>

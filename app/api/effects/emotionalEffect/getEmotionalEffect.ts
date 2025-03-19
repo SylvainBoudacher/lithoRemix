@@ -32,3 +32,27 @@ export async function getEmotionalEffectById(id: string) {
     throw new Error("Impossible de récupérer l'effet émotionnel");
   }
 }
+
+export async function getEmotionalEffectsWithStones() {
+  try {
+    const emotionalEffects = await prisma.emotionalEffect.findMany({
+      where: {
+        stones: {
+          some: {} // Filtre pour ne récupérer que les effets émotionnels liés à au moins une pierre
+        }
+      },
+      select: {
+        id: true,
+        effect: true,
+      },
+      orderBy: {
+        effect: 'asc'
+      }
+    });
+
+    return emotionalEffects;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des effets émotionnels liés aux pierres:", error);
+    throw new Error("Impossible de récupérer les effets émotionnels liés aux pierres");
+  }
+}
