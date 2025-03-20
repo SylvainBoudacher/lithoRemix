@@ -22,6 +22,7 @@ import { getCraftedFormsWithStones } from "~/api/otherParams/craftedForm/getCraf
 import { getStones } from "~/api/stones/getStones";
 import { getPurificationTypesWithStones } from "~/api/types/purification/getPurificationType";
 import { getRechargementTypesWithStones } from "~/api/types/rechargement/getRechargementType";
+import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
   return [
@@ -169,48 +170,64 @@ export default function Index() {
       <div className="pt-6">
         <div className="pb-3">
           <div className="flex items-center gap-12">
-            <button
-              onClick={() => setShowEffects(!showEffects)}
-              className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
-            >
-              <span className="font-bold text-zinc-800">Effets</span>
-
-              <motion.span
-                animate={{ rotate: showEffects ? 90 : 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ display: "inline-block" }}
+            {/* <ButtonGroup variant="ghost">
+              <Button
+                onClick={() => setShowEffects(!showEffects)}
+                className={`${showEffects ? "bg-zinc-800 text-white" : ""}`}
               >
-                <ChevronRight size={20} />
-              </motion.span>
-            </button>
-
-            <button
-              onClick={() => setShowTypes(!showTypes)}
-              className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
-            >
-              <span className="font-bold text-zinc-800">Types</span>
-              <motion.span
-                animate={{ rotate: showTypes ? 90 : 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ display: "inline-block" }}
+                Effets
+              </Button>
+              <Button
+                onClick={() => setShowTypes(!showTypes)}
+                className={`${showTypes ? "bg-zinc-800 text-white" : ""}`}
               >
-                <ChevronRight size={20} />
-              </motion.span>
-            </button>
+                Types
+              </Button>
 
-            <button
-              onClick={() => setShowOtherParams(!showOtherParams)}
-              className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
-            >
-              <span className="font-bold text-zinc-800">Autres</span>
-              <motion.span
-                animate={{ rotate: showOtherParams ? 90 : 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ display: "inline-block" }}
+              <Button
+                onClick={() => setShowOtherParams(!showOtherParams)}
+                className={`${showOtherParams ? "bg-zinc-800 text-white" : ""}`}
               >
-                <ChevronRight size={20} />
-              </motion.span>
-            </button>
+                Autres
+              </Button>
+            </ButtonGroup> */}
+
+            <div className="flex flex-row gap-2">
+              <Button
+                variant={showEffects ? "default" : "outline"}
+                onClick={() => setShowEffects(!showEffects)}
+              >
+                Effets
+                <ChevronRight
+                  className={`transition-transform duration-300 ${
+                    showEffects ? "rotate-90" : ""
+                  }`}
+                />
+              </Button>
+              <Button
+                variant={showTypes ? "default" : "outline"}
+                onClick={() => setShowTypes(!showTypes)}
+              >
+                Types
+                <ChevronRight
+                  className={`transition-transform duration-300 ${
+                    showTypes ? "rotate-90" : ""
+                  }`}
+                />
+              </Button>
+
+              <Button
+                variant={showOtherParams ? "default" : "outline"}
+                onClick={() => setShowOtherParams(!showOtherParams)}
+              >
+                Autres
+                <ChevronRight
+                  className={`transition-transform duration-300 ${
+                    showOtherParams ? "rotate-90" : ""
+                  }`}
+                />
+              </Button>
+            </div>
           </div>
         </div>
         <div className="flex flex-col items-start">
