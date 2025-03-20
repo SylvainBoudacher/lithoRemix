@@ -1,10 +1,6 @@
 import {
   Autocomplete,
   AutocompleteItem,
-  Card,
-  CardBody,
-  CardFooter,
-  Image,
   Select,
   SelectItem,
 } from "@heroui/react";
@@ -22,6 +18,7 @@ import { getCraftedFormsWithStones } from "~/api/otherParams/craftedForm/getCraf
 import { getStones } from "~/api/stones/getStones";
 import { getPurificationTypesWithStones } from "~/api/types/purification/getPurificationType";
 import { getRechargementTypesWithStones } from "~/api/types/rechargement/getRechargementType";
+import StoneCard from "~/components/card/stoneCard";
 import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
@@ -170,28 +167,6 @@ export default function Index() {
       <div className="pt-6">
         <div className="pb-3">
           <div className="flex items-center gap-12">
-            {/* <ButtonGroup variant="ghost">
-              <Button
-                onClick={() => setShowEffects(!showEffects)}
-                className={`${showEffects ? "bg-zinc-800 text-white" : ""}`}
-              >
-                Effets
-              </Button>
-              <Button
-                onClick={() => setShowTypes(!showTypes)}
-                className={`${showTypes ? "bg-zinc-800 text-white" : ""}`}
-              >
-                Types
-              </Button>
-
-              <Button
-                onClick={() => setShowOtherParams(!showOtherParams)}
-                className={`${showOtherParams ? "bg-zinc-800 text-white" : ""}`}
-              >
-                Autres
-              </Button>
-            </ButtonGroup> */}
-
             <div className="flex flex-row gap-2">
               <Button
                 variant={showEffects ? "default" : "outline"}
@@ -545,27 +520,7 @@ export default function Index() {
                 }}
                 layout
               >
-                <Card
-                  isPressable
-                  shadow="md"
-                  radius="sm"
-                  onPress={() => console.log("item pressed")}
-                >
-                  <CardBody className="overflow-visible p-0">
-                    <Image
-                      alt={stone.name}
-                      className="object-cover object-center h-40 w-40"
-                      radius="none"
-                      shadow="sm"
-                      src={stone?.pictures[0]?.url}
-                      width="100%"
-                    />
-                  </CardBody>
-                  <CardFooter className="text-small justify-between">
-                    <b>{stone.name}</b>
-                    <p className="text-default-500">{stone.description}</p>
-                  </CardFooter>
-                </Card>
+                <StoneCard stone={stone} />
               </motion.div>
             ))}
           </AnimatePresence>
