@@ -16,7 +16,12 @@ import { useState } from "react";
 import { getBodyEffectsWithStones } from "~/api/effects/bodyEffects/getBodyEffects";
 import { getEmotionalEffectsWithStones } from "~/api/effects/emotionalEffect/getEmotionalEffect";
 import { getSpiritualEffectsWithStones } from "~/api/effects/spiritualEffect/getSpiritualEffect";
+import { getChakrasWithStones } from "~/api/otherParams/chakra/getChakra";
+import { getContraindicationsWithStones } from "~/api/otherParams/contraindication/getContraindication";
+import { getCraftedFormsWithStones } from "~/api/otherParams/craftedForm/getCraftedForm";
 import { getStones } from "~/api/stones/getStones";
+import { getPurificationTypesWithStones } from "~/api/types/purification/getPurificationType";
+import { getRechargementTypesWithStones } from "~/api/types/rechargement/getRechargementType";
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,6 +34,11 @@ export const loader = async () => {
   const bodyEffectsStones = await getBodyEffectsWithStones();
   const emotionalEffectsStones = await getEmotionalEffectsWithStones();
   const spiritualEffectsStones = await getSpiritualEffectsWithStones();
+  const purificationTypesStones = await getPurificationTypesWithStones();
+  const rechargementTypesStones = await getRechargementTypesWithStones();
+  const chakrasStones = await getChakrasWithStones();
+  const contraindicationsStones = await getContraindicationsWithStones();
+  const craftedFormsStones = await getCraftedFormsWithStones();
 
   const stones = await getStones();
 
@@ -37,6 +47,11 @@ export const loader = async () => {
     bodyEffectsStones,
     emotionalEffectsStones,
     spiritualEffectsStones,
+    purificationTypesStones,
+    rechargementTypesStones,
+    chakrasStones,
+    contraindicationsStones,
+    craftedFormsStones,
   });
 };
 
@@ -46,6 +61,11 @@ export default function Index() {
     bodyEffectsStones,
     emotionalEffectsStones,
     spiritualEffectsStones,
+    purificationTypesStones,
+    rechargementTypesStones,
+    chakrasStones,
+    contraindicationsStones,
+    craftedFormsStones,
   } = useLoaderData<typeof loader>();
 
   const stoneNames = stones.map((stone) => stone.name);
@@ -57,7 +77,23 @@ export default function Index() {
   const [spiritualEffectsToFilter, setSpiritualEffectsToFilter] = useState<
     string[]
   >([]);
+  const [purificationTypesToFilter, setPurificationTypesToFilter] = useState<
+    string[]
+  >([]);
+  const [rechargementTypesToFilter, setRechargementTypesToFilter] = useState<
+    string[]
+  >([]);
+  const [chakrasToFilter, setChakrasToFilter] = useState<string[]>([]);
+  const [contraindicationsToFilter, setContraindicationsToFilter] = useState<
+    string[]
+  >([]);
+  const [craftedFormsToFilter, setCraftedFormsToFilter] = useState<string[]>(
+    []
+  );
+
   const [showEffects, setShowEffects] = useState(false);
+  const [showTypes, setShowTypes] = useState(false);
+  const [showOtherParams, setShowOtherParams] = useState(false);
 
   const finalFilteredStones = stones
     .filter(
@@ -89,7 +125,44 @@ export default function Index() {
         spiritualEffectsToFilter.some((effect) =>
           stone.spiritualEffectIds.includes(effect)
         )
+    )
+    .filter(
+      (stone) =>
+        // Filtre par types de purification si purificationTypesToFilter n'est pas vide
+        purificationTypesToFilter.length === 0 ||
+        purificationTypesToFilter.some((type) =>
+          stone.purificationTypeIds.includes(type)
+        )
+    )
+    .filter(
+      (stone) =>
+        // Filtre par types de rechargement si rechargementTypesToFilter n'est pas vide
+        rechargementTypesToFilter.length === 0 ||
+        rechargementTypesToFilter.some((type) =>
+          stone.rechargementTypeIds.includes(type)
+        )
+    )
+    .filter(
+      (stone) =>
+        // Filtre par chakras si chakrasToFilter n'est pas vide
+        chakrasToFilter.length === 0 ||
+        chakrasToFilter.some((chakra) => stone.chakraIds.includes(chakra))
+    )
+    .filter(
+      (stone) =>
+        // Filtre par contraindications si contraindicationsToFilter n'est pas vide
+        contraindicationsToFilter.length === 0 ||
+        contraindicationsToFilter.some((contraindication) =>
+          stone.contraindicationIds.includes(contraindication)
+        )
+    )
+    .filter(
+      (stone) =>
+        // Filtre par formes artisanales si craftedFormsToFilter n'est pas vide
+        craftedFormsToFilter.length === 0 ||
+        craftedFormsToFilter.some((form) => stone.craftedFormIds.includes(form))
     );
+
   return (
     <div className="flex flex-col gap-4 p-6">
       <h1 className="text-3xl font-bold">Bienvenue sur LithoDico</h1>
@@ -100,7 +173,7 @@ export default function Index() {
           <Autocomplete
             size="sm"
             label="Pierres"
-            className="min-w-xs max-w-xs"
+            className="max-w-xs"
             placeholder="Rechercher une pierre"
             onSelectionChange={(value) =>
               setSearchStoneName(value ? String(value) : "")
@@ -113,11 +186,11 @@ export default function Index() {
 
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-bold text-zinc-800">Effets</p>
               <button
                 onClick={() => setShowEffects(!showEffects)}
-                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center"
+                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
               >
+                <span className="font-bold text-zinc-800">Effets</span>
                 <motion.span
                   animate={{ rotate: showEffects ? 90 : 0 }}
                   transition={{ duration: 0.3 }}
@@ -157,12 +230,12 @@ export default function Index() {
                   }}
                   className="overflow-hidden origin-top"
                 >
-                  <div className="flex flex-row gap-4 w-full pt-1">
+                  <div className="flex flex-row gap-4 pt-1">
                     <Select
-                      size="sm"
-                      className="max-w-xs"
                       label="Corporel"
                       name="bodyEffects"
+                      size="sm"
+                      className="min-w-60"
                       placeholder="Sélectionnez un effet corporel"
                       selectionMode="multiple"
                       onSelectionChange={(value) => {
@@ -181,7 +254,7 @@ export default function Index() {
                     <Select
                       size="sm"
                       label="Émotionnel"
-                      className="max-w-xs"
+                      className="min-w-60"
                       name="emotionalEffects"
                       placeholder="Sélectionnez un effet émotionnel"
                       selectionMode="multiple"
@@ -201,7 +274,7 @@ export default function Index() {
                     <Select
                       size="sm"
                       label="Spirituel"
-                      className="max-w-xs"
+                      className="min-w-60"
                       name="spiritualEffects"
                       placeholder="Sélectionnez un effet spirituel"
                       selectionMode="multiple"
@@ -214,6 +287,208 @@ export default function Index() {
                       {spiritualEffectsStones.map((spiritualEffect) => (
                         <SelectItem key={spiritualEffect.id}>
                           {spiritualEffect.effect}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowTypes(!showTypes)}
+                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
+              >
+                <span className="font-bold text-zinc-800">Types</span>
+                <motion.span
+                  animate={{ rotate: showTypes ? 90 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ display: "inline-block" }}
+                >
+                  <ChevronRight size={20} />
+                </motion.span>
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showTypes && (
+                <motion.div
+                  initial={{
+                    height: 0,
+                    opacity: 0,
+                    scale: 0.95,
+                    y: 0,
+                  }}
+                  animate={{
+                    height: "auto",
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    height: 0,
+                    opacity: 0,
+                    scale: 0.95,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    ease: "easeOut",
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.3 },
+                  }}
+                  className="overflow-hidden origin-top"
+                >
+                  <div className="flex flex-row gap-4 pt-1">
+                    <Select
+                      label="Purification"
+                      name="purificationTypes"
+                      size="sm"
+                      className="min-w-60"
+                      placeholder="Sélectionnez un type de purification"
+                      selectionMode="multiple"
+                      onSelectionChange={(value) => {
+                        const selectedValues = Array.from(value as Set<string>);
+                        setPurificationTypesToFilter(selectedValues);
+                      }}
+                      value={purificationTypesToFilter}
+                    >
+                      {purificationTypesStones.map((purificationType) => (
+                        <SelectItem key={purificationType.id}>
+                          {purificationType.type}
+                        </SelectItem>
+                      ))}
+                    </Select>
+
+                    <Select
+                      size="sm"
+                      label="Rechargement"
+                      className="min-w-60"
+                      name="rechargementTypes"
+                      placeholder="Sélectionnez un type de rechargement"
+                      selectionMode="multiple"
+                      onSelectionChange={(value) => {
+                        const selectedValues = Array.from(value as Set<string>);
+                        setRechargementTypesToFilter(selectedValues);
+                      }}
+                      value={rechargementTypesToFilter}
+                    >
+                      {rechargementTypesStones.map((rechargementType) => (
+                        <SelectItem key={rechargementType.id}>
+                          {rechargementType.type}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowOtherParams(!showOtherParams)}
+                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
+              >
+                <span className="font-bold text-zinc-800">Autres</span>
+                <motion.span
+                  animate={{ rotate: showOtherParams ? 90 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ display: "inline-block" }}
+                >
+                  <ChevronRight size={20} />
+                </motion.span>
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showOtherParams && (
+                <motion.div
+                  initial={{
+                    height: 0,
+                    opacity: 0,
+                    scale: 0.95,
+                    y: 0,
+                  }}
+                  animate={{
+                    height: "auto",
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    height: 0,
+                    opacity: 0,
+                    scale: 0.95,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    ease: "easeOut",
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.3 },
+                  }}
+                  className="overflow-hidden origin-top"
+                >
+                  <div className="flex flex-row gap-4 pt-1">
+                    <Select
+                      label="Chakras"
+                      name="chakras"
+                      size="sm"
+                      className="min-w-60"
+                      placeholder="Sélectionnez un chakra"
+                      selectionMode="multiple"
+                      onSelectionChange={(value) => {
+                        const selectedValues = Array.from(value as Set<string>);
+                        setChakrasToFilter(selectedValues);
+                      }}
+                      value={chakrasToFilter}
+                    >
+                      {chakrasStones.map((chakra) => (
+                        <SelectItem key={chakra.id}>{chakra.number}</SelectItem>
+                      ))}
+                    </Select>
+
+                    <Select
+                      size="sm"
+                      label="Contraindications"
+                      className="min-w-60"
+                      name="contraindications"
+                      placeholder="Sélectionnez une contraindication"
+                      selectionMode="multiple"
+                      onSelectionChange={(value) => {
+                        const selectedValues = Array.from(value as Set<string>);
+                        setContraindicationsToFilter(selectedValues);
+                      }}
+                      value={contraindicationsToFilter}
+                    >
+                      {contraindicationsStones.map((contraindication) => (
+                        <SelectItem key={contraindication.id}>
+                          {contraindication.contraindicationName}
+                        </SelectItem>
+                      ))}
+                    </Select>
+
+                    <Select
+                      size="sm"
+                      label="Formes artisanales"
+                      className="min-w-60"
+                      name="craftedForms"
+                      placeholder="Sélectionnez une forme artisanale"
+                      selectionMode="multiple"
+                      onSelectionChange={(value) => {
+                        const selectedValues = Array.from(value as Set<string>);
+                        setCraftedFormsToFilter(selectedValues);
+                      }}
+                      value={craftedFormsToFilter}
+                    >
+                      {craftedFormsStones.map((craftedForm) => (
+                        <SelectItem key={craftedForm.id}>
+                          {craftedForm.form}
                         </SelectItem>
                       ))}
                     </Select>

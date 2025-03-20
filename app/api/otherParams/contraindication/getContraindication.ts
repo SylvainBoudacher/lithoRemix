@@ -36,3 +36,27 @@ export async function getContraindicationById(id: string) {
     throw new Error("Impossible de récupérer le contraindication");
   }
 }
+
+export async function getContraindicationsWithStones() {
+  try {
+    const contraindications = await prisma.contraindication.findMany({
+      where: {
+        stones: {
+          some: {} // Filtre pour ne récupérer que les contraindications liés à au moins une pierre
+        }
+      },
+      select: {
+        id: true,
+        contraindicationName: true,
+      },
+      orderBy: {
+        contraindicationName: 'asc'
+      }
+    });
+
+    return contraindications;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des contraindications liés aux pierres:", error);
+    throw new Error("Impossible de récupérer les contraindications liés aux pierres");
+  }
+}

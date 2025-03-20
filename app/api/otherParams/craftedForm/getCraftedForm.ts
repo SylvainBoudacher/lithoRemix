@@ -36,3 +36,27 @@ export async function getCraftedFormById(id: string) {
     throw new Error("Impossible de récupérer la forme artisanale");
   }
 }
+
+export async function getCraftedFormsWithStones() {
+  try {
+    const craftedForms = await prisma.craftedForm.findMany({
+      where: {
+        stones: {
+          some: {} // Filtre pour ne récupérer que les formes artisanales liés à au moins une pierre
+        }
+      },
+      select: {
+        id: true,
+        form: true,
+      },
+      orderBy: {
+        form: 'asc'
+      }
+    });
+
+    return craftedForms;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des formes artisanales liés aux pierres:", error);
+    throw new Error("Impossible de récupérer les formes artisanales liés aux pierres");
+  }
+}
