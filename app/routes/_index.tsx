@@ -164,12 +164,56 @@ export default function Index() {
     );
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      <h1 className="text-3xl font-bold">Bienvenue sur LithoDico</h1>
-
+    <div className="flex flex-col px-6">
       {/* FORM */}
       <div className="pt-6">
-        <div className="flex flex-col gap-4 items-start">
+        <div className="pb-3">
+          <div className="flex items-center gap-12">
+            <button
+              onClick={() => setShowEffects(!showEffects)}
+              className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
+            >
+              <span className="font-bold text-zinc-800">Effets</span>
+
+              <motion.span
+                animate={{ rotate: showEffects ? 90 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ display: "inline-block" }}
+              >
+                <ChevronRight size={20} />
+              </motion.span>
+            </button>
+
+            <button
+              onClick={() => setShowTypes(!showTypes)}
+              className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
+            >
+              <span className="font-bold text-zinc-800">Types</span>
+              <motion.span
+                animate={{ rotate: showTypes ? 90 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ display: "inline-block" }}
+              >
+                <ChevronRight size={20} />
+              </motion.span>
+            </button>
+
+            <button
+              onClick={() => setShowOtherParams(!showOtherParams)}
+              className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
+            >
+              <span className="font-bold text-zinc-800">Autres</span>
+              <motion.span
+                animate={{ rotate: showOtherParams ? 90 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ display: "inline-block" }}
+              >
+                <ChevronRight size={20} />
+              </motion.span>
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col items-start">
           <Autocomplete
             size="sm"
             label="Pierres"
@@ -186,131 +230,105 @@ export default function Index() {
 
           <div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowEffects(!showEffects)}
-                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
-              >
-                <span className="font-bold text-zinc-800">Effets</span>
-                <motion.span
-                  animate={{ rotate: showEffects ? 90 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ display: "inline-block" }}
-                >
-                  <ChevronRight size={20} />
-                </motion.span>
-              </button>
-            </div>
+              <AnimatePresence>
+                {showEffects && (
+                  <motion.div
+                    initial={{
+                      height: 0,
+                      opacity: 0,
+                      scale: 0.95,
+                      y: 0,
+                    }}
+                    animate={{
+                      height: "auto",
+                      opacity: 1,
+                      scale: 1,
+                      y: 0,
+                    }}
+                    exit={{
+                      height: 0,
+                      opacity: 0,
+                      scale: 0.95,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.3,
+                      ease: "easeOut",
+                      opacity: { duration: 0.2 },
+                      scale: { duration: 0.3 },
+                    }}
+                    className="overflow-hidden origin-top"
+                  >
+                    <div className="flex flex-row gap-x-4 pt-1">
+                      <Select
+                        label="Corporel"
+                        name="bodyEffects"
+                        size="sm"
+                        className="min-w-60"
+                        placeholder="Sélectionnez un effet corporel"
+                        selectionMode="multiple"
+                        onSelectionChange={(value) => {
+                          const selectedValues = Array.from(
+                            value as Set<string>
+                          );
+                          setBodyEffectsToFilter(selectedValues);
+                        }}
+                        value={bodyEffectsToFilter}
+                      >
+                        {bodyEffectsStones.map((bodyEffect) => (
+                          <SelectItem key={bodyEffect.id}>
+                            {bodyEffect.effect}
+                          </SelectItem>
+                        ))}
+                      </Select>
 
-            <AnimatePresence>
-              {showEffects && (
-                <motion.div
-                  initial={{
-                    height: 0,
-                    opacity: 0,
-                    scale: 0.95,
-                    y: 0,
-                  }}
-                  animate={{
-                    height: "auto",
-                    opacity: 1,
-                    scale: 1,
-                    y: 0,
-                  }}
-                  exit={{
-                    height: 0,
-                    opacity: 0,
-                    scale: 0.95,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.3,
-                    ease: "easeOut",
-                    opacity: { duration: 0.2 },
-                    scale: { duration: 0.3 },
-                  }}
-                  className="overflow-hidden origin-top"
-                >
-                  <div className="flex flex-row gap-4 pt-1">
-                    <Select
-                      label="Corporel"
-                      name="bodyEffects"
-                      size="sm"
-                      className="min-w-60"
-                      placeholder="Sélectionnez un effet corporel"
-                      selectionMode="multiple"
-                      onSelectionChange={(value) => {
-                        const selectedValues = Array.from(value as Set<string>);
-                        setBodyEffectsToFilter(selectedValues);
-                      }}
-                      value={bodyEffectsToFilter}
-                    >
-                      {bodyEffectsStones.map((bodyEffect) => (
-                        <SelectItem key={bodyEffect.id}>
-                          {bodyEffect.effect}
-                        </SelectItem>
-                      ))}
-                    </Select>
+                      <Select
+                        size="sm"
+                        label="Émotionnel"
+                        className="min-w-60"
+                        name="emotionalEffects"
+                        placeholder="Sélectionnez un effet émotionnel"
+                        selectionMode="multiple"
+                        onSelectionChange={(value) => {
+                          const selectedValues = Array.from(
+                            value as Set<string>
+                          );
+                          setEmotionalEffectsToFilter(selectedValues);
+                        }}
+                        value={emotionalEffectsToFilter}
+                      >
+                        {emotionalEffectsStones.map((emotionalEffect) => (
+                          <SelectItem key={emotionalEffect.id}>
+                            {emotionalEffect.effect}
+                          </SelectItem>
+                        ))}
+                      </Select>
 
-                    <Select
-                      size="sm"
-                      label="Émotionnel"
-                      className="min-w-60"
-                      name="emotionalEffects"
-                      placeholder="Sélectionnez un effet émotionnel"
-                      selectionMode="multiple"
-                      onSelectionChange={(value) => {
-                        const selectedValues = Array.from(value as Set<string>);
-                        setEmotionalEffectsToFilter(selectedValues);
-                      }}
-                      value={emotionalEffectsToFilter}
-                    >
-                      {emotionalEffectsStones.map((emotionalEffect) => (
-                        <SelectItem key={emotionalEffect.id}>
-                          {emotionalEffect.effect}
-                        </SelectItem>
-                      ))}
-                    </Select>
-
-                    <Select
-                      size="sm"
-                      label="Spirituel"
-                      className="min-w-60"
-                      name="spiritualEffects"
-                      placeholder="Sélectionnez un effet spirituel"
-                      selectionMode="multiple"
-                      onSelectionChange={(value) => {
-                        const selectedValues = Array.from(value as Set<string>);
-                        setSpiritualEffectsToFilter(selectedValues);
-                      }}
-                      value={spiritualEffectsToFilter}
-                    >
-                      {spiritualEffectsStones.map((spiritualEffect) => (
-                        <SelectItem key={spiritualEffect.id}>
-                          {spiritualEffect.effect}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowTypes(!showTypes)}
-                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
-              >
-                <span className="font-bold text-zinc-800">Types</span>
-                <motion.span
-                  animate={{ rotate: showTypes ? 90 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ display: "inline-block" }}
-                >
-                  <ChevronRight size={20} />
-                </motion.span>
-              </button>
+                      <Select
+                        size="sm"
+                        label="Spirituel"
+                        className="min-w-60"
+                        name="spiritualEffects"
+                        placeholder="Sélectionnez un effet spirituel"
+                        selectionMode="multiple"
+                        onSelectionChange={(value) => {
+                          const selectedValues = Array.from(
+                            value as Set<string>
+                          );
+                          setSpiritualEffectsToFilter(selectedValues);
+                        }}
+                        value={spiritualEffectsToFilter}
+                      >
+                        {spiritualEffectsStones.map((spiritualEffect) => (
+                          <SelectItem key={spiritualEffect.id}>
+                            {spiritualEffect.effect}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <AnimatePresence>
@@ -342,7 +360,7 @@ export default function Index() {
                   }}
                   className="overflow-hidden origin-top"
                 >
-                  <div className="flex flex-row gap-4 pt-1">
+                  <div className="flex flex-row gap-x-4 pt-1">
                     <Select
                       label="Purification"
                       name="purificationTypes"
@@ -389,22 +407,6 @@ export default function Index() {
           </div>
 
           <div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowOtherParams(!showOtherParams)}
-                className="text-sm text-zinc-600 hover:text-zinc-800 flex items-center gap-2"
-              >
-                <span className="font-bold text-zinc-800">Autres</span>
-                <motion.span
-                  animate={{ rotate: showOtherParams ? 90 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ display: "inline-block" }}
-                >
-                  <ChevronRight size={20} />
-                </motion.span>
-              </button>
-            </div>
-
             <AnimatePresence>
               {showOtherParams && (
                 <motion.div
@@ -434,7 +436,7 @@ export default function Index() {
                   }}
                   className="overflow-hidden origin-top"
                 >
-                  <div className="flex flex-row gap-4 pt-1">
+                  <div className="flex flex-row gap-x-4 pt-1">
                     <Select
                       label="Chakras"
                       name="chakras"
@@ -449,7 +451,9 @@ export default function Index() {
                       value={chakrasToFilter}
                     >
                       {chakrasStones.map((chakra) => (
-                        <SelectItem key={chakra.id}>{chakra.number}</SelectItem>
+                        <SelectItem key={chakra.id}>
+                          {chakra.number.toString()}
+                        </SelectItem>
                       ))}
                     </Select>
 
@@ -501,32 +505,53 @@ export default function Index() {
       </div>
 
       {/* LIST OF STONES */}
-      <div className="pt-6">
+      <div className="pt-12">
         <div className="flex flex-row gap-6 flex-wrap">
-          {finalFilteredStones.map((stone) => (
-            <Card
-              key={stone.id}
-              isPressable
-              shadow="md"
-              radius="sm"
-              onPress={() => console.log("item pressed")}
-            >
-              <CardBody className="overflow-visible p-0">
-                <Image
-                  alt={stone.name}
-                  className="object-cover object-center h-40 w-40"
-                  radius="none"
-                  shadow="sm"
-                  src={stone?.pictures[0]?.url}
-                  width="100%"
-                />
-              </CardBody>
-              <CardFooter className="text-small justify-between">
-                <b>{stone.name}</b>
-                <p className="text-default-500">{stone.description}</p>
-              </CardFooter>
-            </Card>
-          ))}
+          <AnimatePresence mode="popLayout">
+            {finalFilteredStones.map((stone, index) => (
+              <motion.div
+                key={stone.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  transition: {
+                    delay: index * 0.1,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.9,
+                  transition: {
+                    duration: 0.2,
+                  },
+                }}
+                layout
+              >
+                <Card
+                  isPressable
+                  shadow="md"
+                  radius="sm"
+                  onPress={() => console.log("item pressed")}
+                >
+                  <CardBody className="overflow-visible p-0">
+                    <Image
+                      alt={stone.name}
+                      className="object-cover object-center h-40 w-40"
+                      radius="none"
+                      shadow="sm"
+                      src={stone?.pictures[0]?.url}
+                      width="100%"
+                    />
+                  </CardBody>
+                  <CardFooter className="text-small justify-between">
+                    <b>{stone.name}</b>
+                    <p className="text-default-500">{stone.description}</p>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>
