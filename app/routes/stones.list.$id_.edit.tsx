@@ -9,6 +9,7 @@ import { getBodyEffects } from "~/api/effects/bodyEffects/getBodyEffects";
 import { getEmotionalEffect } from "~/api/effects/emotionalEffect/getEmotionalEffect";
 import { getSpiritualEffect } from "~/api/effects/spiritualEffect/getSpiritualEffect";
 import { getChakras } from "~/api/otherParams/chakra/getChakra";
+import { getContraindications } from "~/api/otherParams/contraindication/getContraindication";
 import { getCraftedForms } from "~/api/otherParams/craftedForm/getCraftedForm";
 import { getStoneById, getStoneName } from "~/api/stones/getStones";
 import { updateStone } from "~/api/stones/updateStone";
@@ -29,6 +30,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const purificationTypes = await getPurificationTypes();
   const craftedForms = await getCraftedForms();
   const chakras = await getChakras();
+  const contraindications = await getContraindications();
+
   const ENV = {
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -43,6 +46,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     purificationTypes,
     craftedForms,
     chakras,
+    contraindications,
     ENV,
   });
 };
@@ -64,7 +68,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const craftedForms = formData.getAll("craftedForms");
   const chakras = formData.getAll("chakras");
   const pictureName = formData.get("pictureName");
-
+  const contraindications = formData.getAll("contreindications");
   if (!idStone) throw new Response("ID manquant", { status: 400 });
 
   const existingStone = await getStoneName(idStone);
@@ -97,6 +101,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
       pictures: pictureName ? pictures : undefined,
+      contraindicationIds: contraindications
+        ? (contraindications as string[])
+        : [],
     });
   } else {
     await updateStone(idStone, {
@@ -115,6 +122,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         : [],
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
+      contraindicationIds: contraindications
+        ? (contraindications as string[])
+        : [],
     });
   }
 
@@ -131,6 +141,7 @@ export default function EditStone() {
     purificationTypes,
     craftedForms,
     chakras,
+    contraindications,
     ENV,
   } = useLoaderData<typeof loader>();
   const [stoneName, setStoneName] = useState(stone?.name);
@@ -155,6 +166,10 @@ export default function EditStone() {
   );
   const [selectedChakras, setSelectedChakras] = useState(
     stone?.chakras.map((effect) => effect.id) || []
+  );
+
+  const [selectedContreindications, setSelectedContreindications] = useState(
+    stone?.contraindications.map((effect) => effect.id) || []
   );
 
   const [originalImage, setOriginalImage] = useState<string | null>(
@@ -229,6 +244,9 @@ export default function EditStone() {
       stone?.craftedForms.map((effect) => effect.id) || []
     );
     setSelectedChakras(stone?.chakras.map((effect) => effect.id) || []);
+    setSelectedContreindications(
+      stone?.contraindications.map((effect) => effect.id) || []
+    );
     setImagePreview(stone?.pictures[0]?.url || null);
     setOriginalImage(stone?.pictures[0]?.url || null);
   }, [stone]);
@@ -421,8 +439,27 @@ export default function EditStone() {
               </SelectItem>
             ))}
           </Select>
+
+          <Select
+            className="max-w-xs"
+            label="Contre indications"
+            name="contreindications"
+            placeholder="Sélectionnez une contreindication"
+            selectionMode="multiple"
+            selectedKeys={selectedContreindications}
+            onSelectionChange={(keys) => {
+              const selectedKeys = Array.from(keys as Set<string>);
+              setSelectedContreindications(selectedKeys);
+            }}
+          >
+            {contraindications.map((contreindication) => (
+              <SelectItem key={contreindication.id}>
+                {contreindication.contraindicationName}
+              </SelectItem>
+            ))}
+          </Select>
         </div>
-        <Button type="submit" onClick={handleUpload}>
+        <Button type="submit" onClick={handleUpload} className="mt-2">
           Enregistrer
         </Button>
       </div>

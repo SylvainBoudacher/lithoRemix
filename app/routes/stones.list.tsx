@@ -6,6 +6,7 @@ import {
   useLoaderData,
   useNavigate,
 } from "@remix-run/react";
+import { motion } from "framer-motion";
 import { Pencil, Trash2 } from "lucide-react";
 import { getStones } from "~/api/stones/getStones";
 import { Button } from "~/components/ui/button";
@@ -33,7 +34,12 @@ export default function StonesCreate() {
   const destroyingId = fetcher.formData?.get("id");
 
   return (
-    <div className="flex flex-col gap-4">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col gap-4"
+    >
       <div className="flex flex-row mt-10">
         <Table className="">
           <TableHeader>
@@ -89,6 +95,6 @@ export default function StonesCreate() {
           <Outlet />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

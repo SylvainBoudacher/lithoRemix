@@ -5,6 +5,14 @@ export async function getStones() {
         const stones = await prisma.stone.findMany({
             include: {
                 pictures: true,
+                bodyEffects: true,
+                spiritualEffects: true,
+                emotionalEffects: true,
+                rechargementTypes: true,
+                purificationTypes: true,
+                craftedForms: true,
+                chakras: true,
+                contraindications: true
             }
         });
         return stones;
@@ -25,6 +33,7 @@ export async function getStoneById(id: string) {
                 emotionalEffects: true,
                 rechargementTypes: true,
                 purificationTypes: true,
+                contraindications: true,
                 craftedForms: true,
                 chakras: true,
             }
