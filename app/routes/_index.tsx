@@ -264,7 +264,7 @@ export default function Index() {
                         label="Corporel"
                         name="bodyEffects"
                         size="sm"
-                        className="min-w-60"
+                        className="w-60"
                         placeholder="Sélectionnez un effet corporel"
                         selectionMode="multiple"
                         onSelectionChange={(value) => {
@@ -285,7 +285,7 @@ export default function Index() {
                       <Select
                         size="sm"
                         label="Émotionnel"
-                        className="min-w-60"
+                        className="w-60"
                         name="emotionalEffects"
                         placeholder="Sélectionnez un effet émotionnel"
                         selectionMode="multiple"
@@ -307,7 +307,7 @@ export default function Index() {
                       <Select
                         size="sm"
                         label="Spirituel"
-                        className="min-w-60"
+                        className="w-60"
                         name="spiritualEffects"
                         placeholder="Sélectionnez un effet spirituel"
                         selectionMode="multiple"
@@ -365,7 +365,7 @@ export default function Index() {
                       label="Purification"
                       name="purificationTypes"
                       size="sm"
-                      className="min-w-60"
+                      className="w-60"
                       placeholder="Sélectionnez un type de purification"
                       selectionMode="multiple"
                       onSelectionChange={(value) => {
@@ -384,7 +384,7 @@ export default function Index() {
                     <Select
                       size="sm"
                       label="Rechargement"
-                      className="min-w-60"
+                      className="w-60"
                       name="rechargementTypes"
                       placeholder="Sélectionnez un type de rechargement"
                       selectionMode="multiple"
@@ -441,7 +441,7 @@ export default function Index() {
                       label="Chakras"
                       name="chakras"
                       size="sm"
-                      className="min-w-60"
+                      className="w-60"
                       placeholder="Sélectionnez un chakra"
                       selectionMode="multiple"
                       onSelectionChange={(value) => {
@@ -460,7 +460,7 @@ export default function Index() {
                     <Select
                       size="sm"
                       label="Contraindications"
-                      className="min-w-60"
+                      className="w-60"
                       name="contraindications"
                       placeholder="Sélectionnez une contraindication"
                       selectionMode="multiple"
@@ -480,7 +480,7 @@ export default function Index() {
                     <Select
                       size="sm"
                       label="Formes artisanales"
-                      className="min-w-60"
+                      className="w-60"
                       name="craftedForms"
                       placeholder="Sélectionnez une forme artisanale"
                       selectionMode="multiple"
