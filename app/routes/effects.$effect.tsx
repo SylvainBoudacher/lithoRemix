@@ -9,6 +9,7 @@ import {
   useNavigate,
   useParams,
 } from "@remix-run/react";
+import { motion } from "framer-motion";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { createEffect } from "~/api/effects/createEffect";
@@ -78,7 +79,12 @@ export default function Effect() {
   }, [fetcher.state, fetcher.data]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col gap-4"
+    >
       <div className="flex flex-row">
         <fetcher.Form method="post" id="effect-form">
           <div className="h-6 text-red-500 mb-2">
@@ -147,6 +153,6 @@ export default function Effect() {
           <Outlet />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

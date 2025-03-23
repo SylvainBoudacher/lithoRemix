@@ -4,6 +4,7 @@ import {
   Outlet,
   useFetcher,
   useLoaderData,
+  useLocation,
   useNavigate,
 } from "@remix-run/react";
 import { motion } from "framer-motion";
@@ -29,12 +30,14 @@ export default function StonesCreate() {
   const { stones } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const isDestroying = fetcher.state === "submitting";
   const destroyingId = fetcher.formData?.get("id");
 
   return (
     <motion.div
+      key={location.pathname}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
