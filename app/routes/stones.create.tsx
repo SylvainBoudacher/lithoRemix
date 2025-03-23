@@ -64,7 +64,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const chakras = formData.getAll("chakras");
   const contraindications = formData.getAll("contraindications");
   const picture = formData.get("pictureName");
-
+  const description = formData.get("description");
   if (!name) {
     return json({ error: "Le nom de la pierre est requis" }, { status: 400 });
   }
@@ -91,6 +91,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       contraindicationIds: contraindications
         ? (contraindications as string[])
         : [],
+      description: description as string,
       pictures: picture ? [{ url: bucketUrl + picture }] : [],
     });
   } catch (error) {

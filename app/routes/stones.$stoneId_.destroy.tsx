@@ -18,15 +18,19 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 
   const stone = await getStoneById(params.stoneId);
 
-  const imageName = stone?.pictures[0].url.split("/").pop();
+  if (stone?.pictures && stone.pictures.length > 0 && stone.pictures[0].url) {
+    const imageName = stone.pictures[0].url.split("/").pop();
 
-  const { error } = await supabase.storage
-    .from("lithoRemixBuck")
-    .remove([`stones/${imageName}`]);
+    if (imageName) {
+      const { error } = await supabase.storage
+        .from("lithoRemixBuck")
+        .remove([`stones/${imageName}`]);
 
-  if (error) {
-    console.error(error);
-    throw new Error("Erreur lors de la suppression de la pierre");
+      if (error) {
+        console.error(error);
+        throw new Error("Erreur lors de la suppression de la pierre");
+      }
+    }
   }
 
   await destroyStone(params.stoneId);

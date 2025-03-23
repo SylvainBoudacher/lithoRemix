@@ -205,6 +205,7 @@ export default function Index() {
             </div>
           </div>
         </div>
+
         <div className="flex flex-col items-start">
           <Autocomplete
             size="sm"

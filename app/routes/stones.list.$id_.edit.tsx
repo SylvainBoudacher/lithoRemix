@@ -17,6 +17,7 @@ import { getPurificationTypes } from "~/api/types/purification/getPurificationTy
 import { getRechargementTypes } from "~/api/types/rechargement/getRechargementType";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
 
 // TODO : Probleme lors de la modification d'une image - si je change un paramètre, l'image est supprimée
 
@@ -69,6 +70,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const chakras = formData.getAll("chakras");
   const pictureName = formData.get("pictureName");
   const contraindications = formData.getAll("contreindications");
+  const description = formData.get("description");
+
   if (!idStone) throw new Response("ID manquant", { status: 400 });
 
   const existingStone = await getStoneName(idStone);
@@ -101,6 +104,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
       pictures: pictureName ? pictures : undefined,
+      description: description as string,
       contraindicationIds: contraindications
         ? (contraindications as string[])
         : [],
@@ -122,6 +126,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         : [],
       craftedFormIds: craftedForms ? (craftedForms as string[]) : [],
       chakraIds: chakras ? (chakras as string[]) : [],
+      description: description as string,
       contraindicationIds: contraindications
         ? (contraindications as string[])
         : [],
@@ -304,11 +309,18 @@ export default function EditStone() {
             )}
           </label>
 
-          <p className="text-sm text-zinc-800">Nom</p>
+          <p className="text-xs text-zinc-800">Nom</p>
           <Input
             name="stoneName"
             value={stoneName}
             onChange={(e) => setStoneName(e.target.value)}
+          />
+
+          <p className="text-xs text-zinc-800">Description</p>
+          <Textarea
+            name="description"
+            defaultValue={stone?.description || ""}
+            placeholder="Description"
           />
 
           <Select
