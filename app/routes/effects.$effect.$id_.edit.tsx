@@ -54,12 +54,10 @@ export default function EditEffect() {
       <div className="p-6 flex  flex-col">
         <h1 className="text-xl font-bold mb-3 pb-3">Edition</h1>
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-red-500">
-            {errors?.effectValue}
-          </p>
-          <Input 
-            name="effectValue" 
-            value={inputValue} 
+          <p className="text-sm text-red-500">{errors?.effectValue}</p>
+          <Input
+            name="effectValue"
+            value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
           <Button type="submit">Enregistrer</Button>
