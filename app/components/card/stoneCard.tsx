@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardBody, CardFooter, Image } from "@heroui/react";
 
-import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Textarea } from "../ui/textarea";
+import { StonePropertySection } from "./StonePropertySection";
+import { TwoColumnGrid } from "./TwoColumnGrid";
 
 export default function StoneCard({ stone }: { stone: any }) {
   return (
@@ -25,40 +24,85 @@ export default function StoneCard({ stone }: { stone: any }) {
               className="object-cover object-center h-40 w-40"
               radius="none"
               shadow="sm"
-              src={stone?.pictures[0]?.url}
+              src={stone?.pictures[0]?.url as string}
               width="100%"
             />
           </CardBody>
           <CardFooter className="text-small justify-between">
             <b>{stone.name}</b>
-            <p className="text-default-500">{stone.description}</p>
           </CardFooter>
         </Card>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogTitle>{stone.name}</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
-          </div>
+        <div className="flex flex-col gap-4 py-4">
+          {stone.description && (
+            <div>
+              <Label htmlFor="name" className="text-right">
+                Description
+              </Label>
+              <Textarea id="description" value={stone.description} />
+            </div>
+          )}
+
+          <TwoColumnGrid>
+            <StonePropertySection
+              title="Corporels"
+              items={stone?.bodyEffects || []}
+              propertyKey="effect"
+            />
+
+            <StonePropertySection
+              title="Spirituels"
+              items={stone?.spiritualEffects || []}
+              propertyKey="effect"
+            />
+
+            <StonePropertySection
+              title="Emotionnels"
+              items={stone?.emotionalEffects || []}
+              propertyKey="effect"
+            />
+
+            <StonePropertySection
+              title="Rechargement"
+              items={stone?.rechargementTypes || []}
+              propertyKey="type"
+            />
+
+            <StonePropertySection
+              title="Purification"
+              items={stone?.purificationTypes || []}
+              propertyKey="type"
+            />
+
+            <StonePropertySection
+              title="Formes"
+              items={stone?.craftedForms || []}
+              propertyKey="form"
+            />
+
+            <StonePropertySection
+              title="Chakras"
+              items={
+                stone?.chakras?.map((chakra: any) => ({
+                  id: chakra.id,
+                  name: `${chakra.number}`,
+                })) || []
+              }
+              propertyKey="name"
+            />
+
+            <StonePropertySection
+              title="Contre-indications"
+              items={stone?.contraindications || []}
+              propertyKey="name"
+            />
+          </TwoColumnGrid>
         </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
