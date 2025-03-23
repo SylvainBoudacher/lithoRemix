@@ -164,8 +164,21 @@ export default function Index() {
   return (
     <div className="flex flex-col px-6">
       {/* FORM */}
-      <div className="pt-6">
+      <div>
         <div className="pb-3">
+          <Autocomplete
+            size="sm"
+            label="Pierres"
+            className="max-w-xs pb-3"
+            placeholder="Rechercher une pierre"
+            onSelectionChange={(value) =>
+              setSearchStoneName(value ? String(value) : "")
+            }
+          >
+            {stoneNames.map((stoneName) => (
+              <AutocompleteItem key={stoneName}>{stoneName}</AutocompleteItem>
+            ))}
+          </Autocomplete>
           <div className="flex items-center gap-12">
             <div className="flex flex-row gap-2">
               <Button
@@ -207,20 +220,6 @@ export default function Index() {
         </div>
 
         <div className="flex flex-col items-start">
-          <Autocomplete
-            size="sm"
-            label="Pierres"
-            className="max-w-xs"
-            placeholder="Rechercher une pierre"
-            onSelectionChange={(value) =>
-              setSearchStoneName(value ? String(value) : "")
-            }
-          >
-            {stoneNames.map((stoneName) => (
-              <AutocompleteItem key={stoneName}>{stoneName}</AutocompleteItem>
-            ))}
-          </Autocomplete>
-
           <div>
             <div className="flex items-center gap-2">
               <AnimatePresence>
