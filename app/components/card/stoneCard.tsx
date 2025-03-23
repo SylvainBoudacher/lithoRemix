@@ -12,6 +12,7 @@ import { StonePropertySection } from "./StonePropertySection";
 import { TwoColumnGrid } from "./TwoColumnGrid";
 
 export default function StoneCard({ stone }: { stone: any }) {
+  console.log(stone);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -95,7 +96,7 @@ export default function StoneCard({ stone }: { stone: any }) {
             <StonePropertySection
               title="Contre-indications"
               items={stone?.contraindications || []}
-              propertyKey="name"
+              propertyKey="contraindicationName"
             />
           </TwoColumnGrid>
         </div>
