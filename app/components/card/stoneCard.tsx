@@ -8,8 +8,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { Label } from "~/components/ui/label";
-import { Textarea } from "../ui/textarea";
 import { StonePropertySection } from "./StonePropertySection";
 import { TwoColumnGrid } from "./TwoColumnGrid";
 
@@ -41,10 +39,8 @@ export default function StoneCard({ stone }: { stone: any }) {
         <div className="flex flex-col gap-4 py-4">
           {stone.description && (
             <div>
-              <Label htmlFor="name" className="text-right">
-                Description
-              </Label>
-              <Textarea id="description" value={stone.description} />
+              <p className="text-black font-bold text-lg pb-3">Description</p>
+              <p id="description">{stone.description}</p>
             </div>
           )}
 
