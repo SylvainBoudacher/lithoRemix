@@ -217,12 +217,10 @@ export default function EditStone() {
       }
 
       if (newImage) {
-        const { error, data } = await supabase.storage
+        const { error } = await supabase.storage
           .from("lithoRemixBuck")
           .upload(`/stones/${newImage.name}`, newImage);
-        if (data) {
-          console.log(data);
-        }
+
         if (error) {
           console.error(error);
         }

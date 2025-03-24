@@ -12,7 +12,6 @@ import { StonePropertySection } from "./StonePropertySection";
 import { TwoColumnGrid } from "./TwoColumnGrid";
 
 export default function StoneCard({ stone }: { stone: any }) {
-  console.log(stone);
   return (
     <Dialog>
       <DialogTrigger asChild>
