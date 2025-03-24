@@ -1,5 +1,4 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import {
   Link,
@@ -67,7 +66,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <ScrollRestoration />
           <Scripts />
         </HeroUIProvider>
-        <SpeedInsights />
       </body>
     </html>
   );
