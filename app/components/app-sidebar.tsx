@@ -79,10 +79,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-2 py-2 mx-2">
+        <Link
+          to="/"
+          className="flex items-center gap-2 py-2 mx-2 transition-all duration-100 hover:text-zinc-600"
+        >
           <img src="/logo.svg" alt="logo" className="w-10 h-10" />
           <h1 className="text-2xl font-bold">LithoDico</h1>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         {navData.navMain.map((item) => (
