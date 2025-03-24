@@ -1,4 +1,5 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
+
 import {
   Link,
   Links,
@@ -9,7 +10,6 @@ import {
   useLocation,
   useRouteError,
 } from "@remix-run/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { HeroUIProvider } from "@heroui/react";
 import { Separator } from "@radix-ui/react-separator";
@@ -68,7 +68,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <Scripts />
         </HeroUIProvider>
         <Toaster />
-        <SpeedInsights />
       </body>
     </html>
   );
