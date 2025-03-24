@@ -1,4 +1,5 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import {
   Link,
@@ -29,7 +30,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "./components/ui/sidebar";
-import { Toaster } from "./components/ui/sonner";
 import "./tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -67,7 +67,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <ScrollRestoration />
           <Scripts />
         </HeroUIProvider>
-        <Toaster />
+        <SpeedInsights />
       </body>
     </html>
   );
