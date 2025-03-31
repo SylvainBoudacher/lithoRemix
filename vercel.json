@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/count-media",
-      "schedule": "0 9 * * 1,4"
+      "schedule": "10 12 * * 1,4"
     }
   ]
 } 
