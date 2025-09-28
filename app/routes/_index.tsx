@@ -520,7 +520,7 @@ export default function Index() {
                 }}
                 layout
               >
-                <StoneCard stone={stone} />
+                <StoneCard stone={stone as any} />
               </motion.div>
             ))}
           </AnimatePresence>

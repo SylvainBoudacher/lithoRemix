@@ -21,14 +21,26 @@ import { Textarea } from "~/components/ui/textarea";
 import { X } from "lucide-react";
 
 export const loader = async () => {
-  const bodyEffects = await getBodyEffects();
-  const spiritualEffects = await getSpiritualEffect();
-  const emotionalEffects = await getEmotionalEffect();
-  const rechargementTypes = await getRechargementTypes();
-  const purificationTypes = await getPurificationTypes();
-  const craftedForms = await getCraftedForms();
-  const chakras = await getChakras();
-  const contraindications = await getContraindications();
+  // Optimize: Run all database queries in parallel instead of sequentially
+  const [
+    bodyEffects,
+    spiritualEffects,
+    emotionalEffects,
+    rechargementTypes,
+    purificationTypes,
+    craftedForms,
+    chakras,
+    contraindications
+  ] = await Promise.all([
+    getBodyEffects(),
+    getSpiritualEffect(),
+    getEmotionalEffect(),
+    getRechargementTypes(),
+    getPurificationTypes(),
+    getCraftedForms(),
+    getChakras(),
+    getContraindications()
+  ]);
 
   const ENV = {
     SUPABASE_URL: process.env.SUPABASE_URL,

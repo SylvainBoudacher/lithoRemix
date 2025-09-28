@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useMemo } from "react";
 import { Card, CardBody, CardFooter, Image } from "@heroui/react";
 
 import {
@@ -10,8 +10,27 @@ import {
 } from "~/components/ui/dialog";
 import { StonePropertySection } from "./StonePropertySection";
 import { TwoColumnGrid } from "./TwoColumnGrid";
+import type { Stone } from "~/types";
 
-export default function StoneCard({ stone }: { stone: any }) {
+interface StoneCardProps {
+  stone: Stone;
+}
+
+export default React.memo(function StoneCard({ stone }: StoneCardProps) {
+  // Memoize expensive chakra transformation
+  const formattedChakras = useMemo(() =>
+    stone?.chakras?.map(chakra => ({
+      id: chakra.id,
+      name: `${chakra.number}`,
+    })) || [], [stone.chakras]
+  );
+
+  // Memoize primary image URL
+  const primaryImageUrl = useMemo(() =>
+    stone?.pictures?.[0]?.url || '/placeholder-stone.jpg',
+    [stone.pictures]
+  );
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -22,7 +41,7 @@ export default function StoneCard({ stone }: { stone: any }) {
               className="object-cover object-center h-40 w-40"
               radius="none"
               shadow="sm"
-              src={stone?.pictures[0]?.url as string}
+              src={primaryImageUrl}
               width="100%"
             />
           </CardBody>
@@ -83,12 +102,7 @@ export default function StoneCard({ stone }: { stone: any }) {
 
             <StonePropertySection
               title="Chakras"
-              items={
-                stone?.chakras?.map((chakra: any) => ({
-                  id: chakra.id,
-                  name: `${chakra.number}`,
-                })) || []
-              }
+              items={formattedChakras}
               propertyKey="name"
             />
 
@@ -102,4 +116,4 @@ export default function StoneCard({ stone }: { stone: any }) {
       </DialogContent>
     </Dialog>
   );
-}
+});
