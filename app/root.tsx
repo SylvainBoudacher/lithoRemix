@@ -1,4 +1,5 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import React from "react";
 
 import {
   Link,
@@ -141,8 +142,8 @@ export default function App() {
             <Breadcrumb>
               <BreadcrumbList>
                 {pathSegments.map((segment, index) => (
-                  <>
-                    <BreadcrumbItem key={index}>
+                  <React.Fragment key={index}>
+                    <BreadcrumbItem>
                       <BreadcrumbLink asChild>
                         <Link
                           to={`/${pathSegments.slice(0, index + 1).join("/")}`}
@@ -157,7 +158,7 @@ export default function App() {
                     {index < pathSegments.length - 1 && (
                       <BreadcrumbSeparator className="hidden md:block" />
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </BreadcrumbList>
             </Breadcrumb>

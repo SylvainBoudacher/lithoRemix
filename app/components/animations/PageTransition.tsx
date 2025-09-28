@@ -33,7 +33,7 @@ const slideVariants = {
     x: 0,
     opacity: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       damping: 25,
       stiffness: 120,
     },
@@ -43,7 +43,7 @@ const slideVariants = {
     opacity: 0,
     transition: {
       duration: 0.3,
-      ease: "easeInOut",
+      ease: "easeInOut" as const,
     },
   },
 };
@@ -54,7 +54,7 @@ const scaleVariants = {
     scale: 1,
     opacity: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       damping: 20,
       stiffness: 200,
     },
@@ -77,7 +77,7 @@ const rotateVariants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       damping: 20,
       stiffness: 80,
     },
@@ -192,7 +192,7 @@ export const CardItem = ({
       scale: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 20,
       },
