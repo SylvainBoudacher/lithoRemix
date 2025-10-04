@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react"
 
+import { useNavigate } from "@remix-run/react"
 import {
   Avatar,
   AvatarFallback,
@@ -29,6 +30,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar"
+import { signOut } from "~/lib/auth.client"
 
 export function NavUser({
   user,
@@ -40,6 +42,17 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          navigate("/login")
+        },
+      },
+    })
+  }
 
   return (
     <SidebarMenu>
@@ -102,9 +115,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
               <LogOut />
-              Log out
+              Se déconnecter
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

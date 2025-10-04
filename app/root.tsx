@@ -1,4 +1,5 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import React from "react";
 
 import {
@@ -8,6 +9,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
   useLocation,
   useRouteError,
 } from "@remix-run/react";
@@ -31,6 +33,12 @@ import {
   SidebarTrigger,
 } from "./components/ui/sidebar";
 import "./tailwind.css";
+import { getSession } from "./lib/session.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request);
+  return json({ session });
+}
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -126,14 +134,27 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
+  const { session } = useLoaderData<typeof loader>();
   const location = useLocation();
   const pathSegments = location.pathname
     .split("/")
     .filter((segment) => segment !== "");
 
+  // Pages sans sidebar
+  const noSidebarPages = ["/login", "/signup"];
+  const isNoSidebarPage = noSidebarPages.includes(location.pathname);
+
+  if (isNoSidebarPage) {
+    return (
+      <AnimatePresence mode="wait">
+        <Outlet key={location.pathname} />
+      </AnimatePresence>
+    );
+  }
+
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar session={session} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">

@@ -2,15 +2,18 @@ import { Link, useLocation } from "@remix-run/react";
 import {
   BookOpenText,
   Library,
+  LogIn,
   Pyramid,
   Sparkles,
   SunMoon,
+  UserPlus,
 } from "lucide-react";
 import * as React from "react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -20,6 +23,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "~/components/ui/sidebar";
+import { NavUser } from "./nav-user";
 
 const data = {
   navMain: [
@@ -62,7 +66,12 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  session,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  session: { user: { name: string; email: string; image?: string | null } } | null
+}) {
   const location = useLocation();
 
   const navData = {
@@ -107,6 +116,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        {session?.user ? (
+          <NavUser
+            user={{
+              name: session.user.name,
+              email: session.user.email,
+              avatar: session.user.image ?? "",
+            }}
+          />
+        ) : (
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/login">
+                  <LogIn />
+                  Se connecter
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/signup">
+                  <UserPlus />
+                  Créer un compte
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
